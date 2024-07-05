@@ -214,5 +214,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
         </CardContent>
       </Card>
     </div>
+    <div class="grid gap-4 md:gap-8 lg:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <CardTitle> สถิติการใช้งาน </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <img
+            src="https://wcs.smartdraw.com/chart/img/clustered-bar-chart.png?bn=15100111938"
+            alt="Chart"
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle> สถิติการขาย </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <img
+            src="https://www.microsoft.com/en-us/microsoft-365/blog/wp-content/uploads/sites/2/2012/06/Excel-charts-11.png"
+            alt="Chart"
+          />
+        </CardContent>
+      </Card>
+    </div>
   </main>
 </template>

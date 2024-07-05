@@ -27,13 +27,20 @@ const menus: MenuItem[] = [
 ]
 </script>
 <template>
-  <div class="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+  <div class="grid h-dvh w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
     <CSidebar :menus="menus" />
     <div class="flex flex-col">
       <CHeader :menus="menus" />
-      <main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+      <main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 height">
         <router-view />
       </main>
     </div>
   </div>
 </template>
+
+<style scoped>
+.height {
+  max-height: calc(100dvh - 60px);
+  overflow-y: scroll;
+}
+</style>

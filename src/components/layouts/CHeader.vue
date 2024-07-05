@@ -7,7 +7,6 @@ import { computed } from 'vue'
 
 import { Bell, Menu, Package2 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Icon } from '@iconify/vue'
 import {
