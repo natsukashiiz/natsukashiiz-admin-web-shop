@@ -6,8 +6,7 @@ import { RouterLink } from 'vue-router'
 import CAccountBox from '@/components/layouts/CAccountItem.vue'
 import CSidebarToggle from '@/components/layouts/CSidebarToggle.vue'
 import { Package2 } from 'lucide-vue-next'
-import CMenuItem from '@/components/layouts/CMenuItem.vue'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import CMenu from '@/components/layouts/CMenu.vue'
 
 defineProps({
   menus: {
@@ -48,7 +47,7 @@ defineProps({
       <div class="flex-1 max-h-full overflow-y-scroll">
         <nav class="grid items-start px-2 text-sm font-medium lg:px-4">
           <template v-for="menu in menus" :key="menu.name">
-            <CMenuItem :menu="menu" :collapsed="collapsed" />
+            <CMenu :menu="menu" :collapsed="collapsed" />
           </template>
         </nav>
       </div>

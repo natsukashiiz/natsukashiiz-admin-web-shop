@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import CAccountBox from '@/components/layouts/CAccountItem.vue'
+import CMenu from './CMenu.vue'
 
 const props = defineProps({
   menus: {
@@ -27,17 +28,27 @@ const props = defineProps({
 const route = useRoute()
 const mode = useColorMode()
 
-const routeNameFirstUpper = () => {
-  const name = routeName()
+const findInMenu = (menus: MenuItem[], routeName: string): MenuItem | undefined => {
+  for (const menu of menus) {
+    if (menu.name === routeName) {
+      return menu
+    }
+    if (menu.children) {
+      const found = findInMenu(menu.children, routeName)
+      if (found) {
+        return found
+      }
+    }
+  }
+  return undefined
+}
+
+const routeNameFirstUpper = (name: string) => {
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
-const routeName = () => {
-  const name = route.name
-  return name ? name.toString() : 'Dashboard'
-}
 const title = computed(() => {
-  const menu = props.menus.find((menu) => route.path.includes(menu.href))
-  return menu ? menu.name : routeNameFirstUpper()
+  const menu = findInMenu(props.menus, route.name as string)
+  return menu ? routeNameFirstUpper(menu.title) : 'แดชบอร์ด'
 })
 </script>
 
@@ -52,26 +63,17 @@ const title = computed(() => {
       </SheetTrigger>
       <SheetContent side="left" class="flex flex-col">
         <nav class="grid gap-2 text-lg font-medium">
-          <a href="#" class="flex items-center gap-2 text-lg font-semibold">
+          <router-link to="/home" class="flex items-center gap-2 text-lg font-semibold">
             <Package2 class="h-6 w-6" />
-            <span class="sr-only">ร้านค้า</span>
-          </a>
+            <span>ระบบจัดการร้านค้า</span>
+          </router-link>
           <template v-for="menu in menus" :key="menu.name">
-            <router-link
-              :to="menu.href"
-              class="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground transition-all duration-500"
-              :class="
-                $route.path.includes(menu.href) ? 'bg-primary text-white' : 'text-muted-foreground'
-              "
-            >
-              <component :is="menu.icon" class="h-5 w-5" />
-              <span>{{ menu.name }}</span>
-            </router-link>
+            <CMenu :menu="menu" />
           </template>
         </nav>
         <div class="mt-auto">
           <hr class="my-2" />
-          <CAccountBox :collapsed="false" />
+          <CAccountBox />
         </div>
       </SheetContent>
     </Sheet>

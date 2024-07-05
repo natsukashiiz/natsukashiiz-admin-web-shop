@@ -12,19 +12,74 @@ import {
   Ticket,
   GalleryThumbnails,
   UserRoundCog,
-  LayoutList
+  LayoutList,
+  PackagePlus,
+  List
 } from 'lucide-vue-next'
 import { useSettingStore } from '@/stores/settingStore'
 
 const menus: MenuItem[] = [
-  { name: 'แดชบอร์ด', icon: Home, href: '/home' },
-  { name: 'คำสั่งซื้อ', icon: ShoppingCart, href: '/orders' },
-  { name: 'สินค้า', icon: Package, href: '/products' },
-  { name: 'หมวดหมู่', icon: LayoutList, href: '/categories' },
-  { name: 'คูปอง', icon: Ticket, href: '/vouchers' },
-  { name: 'คารูเซล', icon: GalleryThumbnails, href: '/carousels' },
-  { name: 'ลูกค้า', icon: Users, href: '/customers' },
-  { name: 'ผู้จัดการ', icon: UserRoundCog, href: '/managers' }
+  {
+    title: 'แดชบอร์ด',
+    name: 'home',
+    href: '/home',
+    icon: Home
+  },
+  {
+    title: 'คำสั่งซื้อ',
+    name: 'orders',
+    href: '/orders',
+    icon: ShoppingCart
+  },
+  {
+    title: 'สินค้า',
+    name: 'products',
+    icon: Package,
+    children: [
+      {
+        title: 'รายการสินค้า',
+        name: 'products-list',
+        href: '/products',
+        icon: List
+      },
+      {
+        title: 'เพิ่มสินค้า',
+        name: 'products-create',
+        href: '/products/create',
+        icon: PackagePlus
+      }
+    ]
+  },
+  {
+    title: 'หมวดหมู่',
+    name: 'categories',
+    href: '/categories',
+    icon: LayoutList
+  },
+  {
+    title: 'คูปอง',
+    name: 'vouchers',
+    href: '/vouchers',
+    icon: Ticket
+  },
+  {
+    title: 'คารูเซล',
+    name: 'carousels',
+    href: '/carousels',
+    icon: GalleryThumbnails
+  },
+  {
+    title: 'ลูกค้า',
+    name: 'customers',
+    href: '/customers',
+    icon: Users
+  },
+  {
+    title: 'ผู้จัดการ',
+    name: 'managers',
+    href: '/managers',
+    icon: UserRoundCog
+  }
 ]
 
 const settingStore = useSettingStore()

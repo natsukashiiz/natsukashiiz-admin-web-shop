@@ -18,11 +18,11 @@ defineProps({
 
 <template>
   <router-link
-    :to="menu.href"
-    class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary"
+    :to="menu.href || ''"
+    class="flex items-center gap-3 rounded-lg px-3 py-2 my-[2px] transition-all hover:text-primary"
     :class="{
-      'bg-muted text-primary': $route.path.includes(menu.href),
-      'text-muted-foreground': !$route.path.includes(menu.href),
+      'bg-muted text-primary': $route.name && ($route.name as string).includes(menu.name),
+      'text-muted-foreground': $route.name && !($route.name as string).includes(menu.name),
       'justify-center': collapsed,
       'justify-start': !collapsed
     }"
@@ -33,7 +33,7 @@ defineProps({
           <component :is="menu.icon" class="h-5 w-5" />
         </TooltipTrigger>
         <TooltipContent side="right">
-          <p>{{ menu.name }}</p>
+          <p>{{ menu.title }}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -43,7 +43,7 @@ defineProps({
         class="truncate"
         :class="collapsed ? '-translate-x-96 opacity-0 hidden' : 'translate-x-0 opacity-100'"
       >
-        {{ menu.name }}
+        {{ menu.title }}
       </span>
     </template>
   </router-link>

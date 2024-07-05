@@ -16,7 +16,7 @@ import type { PropType } from 'vue'
 defineProps({
   collapsed: {
     type: Boolean as PropType<boolean>,
-    required: true
+    default: false
   }
 })
 </script>
