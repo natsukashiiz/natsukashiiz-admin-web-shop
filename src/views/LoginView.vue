@@ -5,9 +5,11 @@ import { Label } from '@/components/ui/label'
 import { reactive } from 'vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { useRouter } from 'vue-router'
+import { useLoadingStore } from '@/stores/loading'
 
 const { toast } = useToast()
 const router = useRouter()
+const loading = useLoadingStore()
 
 const form = reactive({
   email: '',
@@ -33,12 +35,18 @@ const handleSubmit = () => {
     return
   }
 
-  toast({
-    title: 'เข้าสู่ระบบสำเร็จ',
-    duration: 3000
-  })
+  loading.start()
 
-  router.push('/')
+  // delay 3 seconds
+  setTimeout(() => {
+    loading.stop()
+    toast({
+      title: 'เข้าสู่ระบบสำเร็จ',
+      duration: 3000
+    })
+
+    router.push('/')
+  }, 3000)
 }
 </script>
 
