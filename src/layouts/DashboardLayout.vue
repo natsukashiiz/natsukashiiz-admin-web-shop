@@ -14,6 +14,7 @@ import {
   UserRoundCog,
   LayoutList
 } from 'lucide-vue-next'
+import { useSettingStore } from '@/stores/settingStore'
 
 const menus: MenuItem[] = [
   { name: 'แดชบอร์ด', icon: Home, href: '/home' },
@@ -25,22 +26,31 @@ const menus: MenuItem[] = [
   { name: 'ลูกค้า', icon: Users, href: '/customers' },
   { name: 'ผู้จัดการ', icon: UserRoundCog, href: '/managers' }
 ]
+
+const settingStore = useSettingStore()
+settingStore.loadSetting()
 </script>
 <template>
-  <div class="grid h-dvh w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-    <CSidebar :menus="menus" />
+  <div
+    class="grid h-dvh w-full transition-all ease-in-out duration-500"
+    :class="
+      settingStore.sidebarCollapsed
+        ? 'md:grid-cols-[90px_1fr] lg:grid-cols-[90px_1fr]'
+        : 'md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr]'
+    "
+  >
+    <CSidebar
+      :menus="menus"
+      :toggle="settingStore.toggleSidebar"
+      :collapsed="settingStore.sidebarCollapsed"
+    />
     <div class="flex flex-col">
       <CHeader :menus="menus" />
-      <main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 height">
+      <main
+        class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 max-h-[calc(100dvh-60px)] overflow-scroll"
+      >
         <router-view />
       </main>
     </div>
   </div>
 </template>
-
-<style scoped>
-.height {
-  max-height: calc(100dvh - 60px);
-  overflow-y: scroll;
-}
-</style>

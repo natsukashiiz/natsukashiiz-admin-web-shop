@@ -15,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import CAccountBox from '@/components/CAccountBox.vue'
+import CAccountBox from '@/components/layouts/CAccountItem.vue'
 
 const props = defineProps({
   menus: {
@@ -59,11 +59,9 @@ const title = computed(() => {
           <template v-for="menu in menus" :key="menu.name">
             <router-link
               :to="menu.href"
-              class="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground"
+              class="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground transition-all duration-500"
               :class="
-                $route.path.includes(menu.href)
-                  ? 'bg-muted text-foreground'
-                  : 'text-muted-foreground'
+                $route.path.includes(menu.href) ? 'bg-primary text-white' : 'text-muted-foreground'
               "
             >
               <component :is="menu.icon" class="h-5 w-5" />
@@ -73,12 +71,12 @@ const title = computed(() => {
         </nav>
         <div class="mt-auto">
           <hr class="my-2" />
-          <CAccountBox />
+          <CAccountBox :collapsed="false" />
         </div>
       </SheetContent>
     </Sheet>
 
-    <span class="text-lg font-semibold"> {{ title }} </span>
+    <span class="text-lg font-semibold ml-4"> {{ title }} </span>
 
     <div class="ml-auto space-x-3">
       <Button variant="outline" size="icon" class="h-8 w-8">

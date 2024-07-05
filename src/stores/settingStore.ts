@@ -6,7 +6,16 @@ export const useSettingStore = defineStore('setting', () => {
 
   const toggleSidebar = () => {
     sidebarCollapsed.value = !sidebarCollapsed.value
+    localStorage.setItem('sidebar-collapsed', String(sidebarCollapsed.value))
   }
 
-  return { sidebarCollapsed, toggleSidebar }
+  const loadSetting = () => {
+    // load setting from localStorage
+    const collapsed = localStorage.getItem('sidebar-collapsed')
+    if (collapsed) {
+      sidebarCollapsed.value = collapsed === 'true'
+    }
+  }
+
+  return { sidebarCollapsed, toggleSidebar, loadSetting }
 })
