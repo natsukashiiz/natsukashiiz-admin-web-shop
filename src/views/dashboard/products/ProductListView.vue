@@ -72,7 +72,7 @@ const colums: TableColumn[] = [
 const products = [
   {
     id: 1,
-    image: 'https://picsum.photos/100/100',
+    image: 'https://www.shadcn-vue.com/placeholder.svg',
     name: 'เครื่องทำน้ำมะนาวเลเซอร์',
     status: 'ฉบับร่าง',
     price: '$499.99',
@@ -81,7 +81,7 @@ const products = [
   },
   {
     id: 2,
-    image: 'https://picsum.photos/100/100',
+    image: 'https://www.shadcn-vue.com/placeholder.svg',
     name: 'Hypernova Headphones',
     status: 'เปิดใช้งาน',
     price: '$129.99',
@@ -90,7 +90,7 @@ const products = [
   },
   {
     id: 3,
-    image: 'https://picsum.photos/100/100',
+    image: 'https://www.shadcn-vue.com/placeholder.svg',
     name: 'AeroGlow Desk Lamp',
     status: 'เปิดใช้งาน',
     price: '$39.99',
@@ -99,7 +99,7 @@ const products = [
   },
   {
     id: 4,
-    image: 'https://picsum.photos/100/100',
+    image: 'https://www.shadcn-vue.com/placeholder.svg',
     name: 'TechTonic Energy Drink',
     status: 'ฉบับร่าง',
     price: '$2.99',
@@ -108,7 +108,7 @@ const products = [
   },
   {
     id: 5,
-    image: 'https://picsum.photos/100/100',
+    image: 'https://www.shadcn-vue.com/placeholder.svg',
     name: 'Gamer Gear Pro Controller',
     status: 'เปิดใช้งาน',
     price: '$59.99',
@@ -117,7 +117,7 @@ const products = [
   },
   {
     id: 6,
-    image: 'https://picsum.photos/100/100',
+    image: 'https://www.shadcn-vue.com/placeholder.svg',
     name: 'Luminous VR Headset',
     status: 'เปิดใช้งาน',
     price: '$199.99',
@@ -188,12 +188,12 @@ const handlePageChange = (page: number) => {
         <File class="h-3.5 w-3.5" />
         <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> ส่งออก </span>
       </Button>
-      <Button size="sm" class="h-7 gap-1">
-        <PlusCircle class="h-3.5 w-3.5" />
-        <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-          <router-link to="/products/create"> เพิ่มสินค้า </router-link>
-        </span>
-      </Button>
+      <router-link to="/products/create">
+        <Button size="sm" class="h-7 gap-1">
+          <PlusCircle class="h-3.5 w-3.5" />
+          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มสินค้า </span>
+        </Button>
+      </router-link>
     </div>
   </div>
   <Card>

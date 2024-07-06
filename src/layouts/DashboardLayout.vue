@@ -87,7 +87,7 @@ settingStore.loadSetting()
 </script>
 <template>
   <div
-    class="grid h-dvh w-full transition-all ease-in-out duration-500"
+    class="grid h-dvh w-full"
     :class="
       settingStore.sidebarCollapsed
         ? 'md:grid-cols-[90px_1fr] lg:grid-cols-[90px_1fr]'
@@ -102,7 +102,7 @@ settingStore.loadSetting()
     <div class="flex flex-col">
       <CHeader :menus="menus" />
       <main
-        class="flex flex-1 flex-col gap-4 p-4 md:gap-5 md:p-5 max-h-[calc(100dvh-60px)] overflow-y-scroll"
+        class="flex flex-1 flex-col gap-4 p-4 md:gap-5 md:p-5 max-h-[calc(100vh-60px)] overflow-y-auto"
       >
         <router-view />
       </main>
