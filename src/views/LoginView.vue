@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label'
 import { reactive } from 'vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { useRouter } from 'vue-router'
-import { useLoadingStore } from '@/stores/loading'
+import { useLoadingStore } from '@/stores/loadingStore'
 
 const { toast } = useToast()
 const router = useRouter()

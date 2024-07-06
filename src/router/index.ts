@@ -27,11 +27,12 @@ const router = createRouter({
         {
           path: '/products',
           name: 'products',
+          redirect: '/products/list',
           children: [
             {
-              path: '',
+              path: 'list',
               name: 'products-list',
-              component: () => import('@/views/dashboard/products/ProductsView.vue')
+              component: () => import('@/views/dashboard/products/ProductListView.vue')
             },
             {
               path: 'create',

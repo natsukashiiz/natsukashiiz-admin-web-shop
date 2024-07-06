@@ -39,7 +39,7 @@ const menus: MenuItem[] = [
       {
         title: 'รายการสินค้า',
         name: 'products-list',
-        href: '/products',
+        href: '/products/list',
         icon: List
       },
       {
@@ -102,7 +102,7 @@ settingStore.loadSetting()
     <div class="flex flex-col">
       <CHeader :menus="menus" />
       <main
-        class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 max-h-[calc(100dvh-60px)] overflow-scroll"
+        class="flex flex-1 flex-col gap-4 p-4 md:gap-5 md:p-5 max-h-[calc(100dvh-60px)] overflow-y-scroll"
       >
         <router-view />
       </main>
