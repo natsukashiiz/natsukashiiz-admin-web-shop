@@ -104,6 +104,11 @@ const router = createRouter({
               path: 'list',
               name: 'carousel-list',
               component: () => import('@/views/dashboard/carousels/CarouselListView.vue')
+            },
+            {
+              path: 'create',
+              name: 'carousel-create',
+              component: () => import('@/views/dashboard/carousels/CarouselCreateView.vue')
             }
           ]
         },

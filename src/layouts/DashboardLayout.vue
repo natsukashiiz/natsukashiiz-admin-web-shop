@@ -91,8 +91,21 @@ const menus: MenuItem[] = [
   {
     title: 'ภาพสไลด์',
     name: 'carousels',
-    href: '/carousels',
-    icon: GalleryThumbnails
+    icon: GalleryThumbnails,
+    children: [
+      {
+        title: 'รายการภาพสไลด์',
+        name: 'carousels-list',
+        href: '/carousels/list',
+        icon: List
+      },
+      {
+        title: 'เพิ่มภาพสไลด์',
+        name: 'carousels-create',
+        href: '/carousels/create',
+        icon: PackagePlus
+      }
+    ]
   },
   {
     title: 'ลูกค้า',
