@@ -76,7 +76,14 @@ const router = createRouter({
         {
           path: '/vouchers',
           name: 'vouchers',
-          component: () => import('@/views/dashboard/VouchersView.vue')
+          redirect: '/vouchers/list',
+          children: [
+            {
+              path: 'list',
+              name: 'voucher-list',
+              component: () => import('@/views/dashboard/vouchers/VoucherListView.vue')
+            }
+          ]
         },
         {
           path: '/carousels',
