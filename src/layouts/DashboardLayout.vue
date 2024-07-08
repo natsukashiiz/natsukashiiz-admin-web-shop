@@ -123,8 +123,15 @@ const menus: MenuItem[] = [
   {
     title: 'ผู้จัดการ',
     name: 'managers',
-    href: '/managers',
-    icon: UserRoundCog
+    icon: UserRoundCog,
+    children: [
+      {
+        title: 'รายการผู้จัดการ',
+        name: 'managers-list',
+        href: '/managers/list',
+        icon: List
+      }
+    ]
   }
 ]
 

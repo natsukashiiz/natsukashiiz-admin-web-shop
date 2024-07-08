@@ -127,7 +127,14 @@ const router = createRouter({
         {
           path: '/managers',
           name: 'managers',
-          component: () => import('@/views/dashboard/ManagersView.vue')
+          redirect: '/managers/list',
+          children: [
+            {
+              path: 'list',
+              name: 'manager-list',
+              component: () => import('@/views/dashboard/managers/ManagerListView.vue')
+            }
+          ]
         },
         {
           path: '/profile',
