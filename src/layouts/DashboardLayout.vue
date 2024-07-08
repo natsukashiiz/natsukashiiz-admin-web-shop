@@ -53,8 +53,21 @@ const menus: MenuItem[] = [
   {
     title: 'หมวดหมู่',
     name: 'categories',
-    href: '/categories',
-    icon: LayoutList
+    icon: LayoutList,
+    children: [
+      {
+        title: 'รายการหมวดหมู่',
+        name: 'categories-list',
+        href: '/categories/list',
+        icon: List
+      },
+      {
+        title: 'เพิ่มหมวดหมู่',
+        name: 'categories-create',
+        href: '/categories/create',
+        icon: PackagePlus
+      }
+    ]
   },
   {
     title: 'คูปอง',

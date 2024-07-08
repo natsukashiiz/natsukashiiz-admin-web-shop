@@ -47,6 +47,18 @@ const router = createRouter({
           ]
         },
         {
+          path: '/categories',
+          name: 'categories',
+          redirect: '/categories/list',
+          children: [
+            {
+              path: 'list',
+              name: 'category-list',
+              component: () => import('@/views/dashboard/categories/CategoryListView.vue')
+            }
+          ]
+        },
+        {
           path: '/customers',
           name: 'customers',
           component: () => import('@/views/dashboard/CustomersView.vue')
@@ -55,11 +67,6 @@ const router = createRouter({
           path: '/vouchers',
           name: 'vouchers',
           component: () => import('@/views/dashboard/VouchersView.vue')
-        },
-        {
-          path: '/categories',
-          name: 'categories',
-          component: () => import('@/views/dashboard/CategoriesView.vue')
         },
         {
           path: '/carousels',
