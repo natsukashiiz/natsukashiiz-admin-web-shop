@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { AxiosResponse } from 'axios'
-import type { ApiResponse, TokenResponse, TokenPayload } from '@/types/api'
+import type { TokenResponse, TokenPayload } from '@/types/api'
 import router from '@/router'
 import client from '@/api/request'
 import { refresh } from '@/api/auth'
@@ -21,18 +21,20 @@ export const useAuthStore = defineStore('AuthStore', () => {
    * โอนโทเค็นจากการตอบกลับ api login ไปเก็บที่พื้นที่จัดเก็บข้อมูลในระบบ และตั้งค่าการหมดเวลาเพื่อรีเฟรชโทเค็นก่อนที่จะหมดอายุ
    * @param response การตอบกลับจาก Axios ที่มีข้อมูลโทเค็น (token response)
    */
-  const transfer = async (response: AxiosResponse<ApiResponse<TokenResponse>>) => {
-    if (response.status === 200 && response.data.code === 0 && response.data.result) {
-      token.value = response.data.result
+  const transfer = async (response: AxiosResponse<TokenResponse>) => {
+    if (response.status === 200 && response.data) {
+      token.value = response.data
       if (token.value) {
         store.set(token.value)
 
         // ตั้งค่าการหมดเวลาเพื่อรีเฟรชโทเค็นก่อนที่จะหมดอายุ
-        const timeout = (token.value.expire - Math.floor(Date.now() / 1000) - 60) * 1000
-        const refreshText = token.value.refresh
-        setTimeout(async () => {
-          await refreshToken(refreshText)
-        }, timeout)
+        // const timeout = (token.value.expire - Math.floor(Date.now() / 1000) - 60) * 1000
+        // const refreshText = token.value.refresh
+        // setTimeout(async () => {
+        //   await refreshToken(refreshText)
+        // }, timeout)
+
+        await loadAuth()
 
         router.push({ name: 'layout' })
       }
@@ -47,29 +49,32 @@ export const useAuthStore = defineStore('AuthStore', () => {
     token.value = store.get() ? (JSON.parse(store.get() as string) as TokenResponse) : null
     if (token.value) {
       // ถอดรหัสโทเค็นเพื่อใช้งาน
-      payload.value = JSON.parse(atob(token.value.token.split('.')[1]))
+      payload.value = JSON.parse(atob(token.value.accessToken.split('.')[1]))
 
-      // หากโทเค็นหมดอายุแล้ว จะรีเฟรชโทเค็น
-      if (token.value.expire - Math.floor(Date.now() / 1000) < 60) {
-        await refreshToken(token.value.refresh)
-      }
-
-      // หากโทเค็นหมดอายุแล้ว และไม่สามารถรีเฟรชโทเค็นได้ จะลงชื่อออก
-      if (token.value.expire - Math.floor(Date.now() / 1000) < 0) {
-        logout()
-      }
-
-      client.interceptors.request.use(
-        (config) => {
-          if (token.value) {
-            config.headers.Authorization = `Bearer ${token.value.token}`
-          }
-          return config
-        },
-        (error) => {
-          return Promise.reject(error)
+      if (payload.value) {
+        // หากโทเค็นหมดอายุแล้ว และไม่สามารถรีเฟรชโทเค็นได้ จะลงชื่อออก
+        if (payload.value.exp - Math.floor(Date.now() / 1000) < 0) {
+          logout()
+          return
         }
-      )
+
+        // หากโทเค็นหมดอายุแล้ว จะรีเฟรชโทเค็น
+        if (payload.value.exp - Math.floor(Date.now() / 1000) < 60) {
+          await refreshToken(token.value.refreshToken)
+        }
+
+        client.interceptors.request.use(
+          (config) => {
+            if (token.value) {
+              config.headers.Authorization = `Bearer ${token.value.accessToken}`
+            }
+            return config
+          },
+          (error) => {
+            return Promise.reject(error)
+          }
+        )
+      }
     } else {
       logout()
     }
@@ -81,7 +86,11 @@ export const useAuthStore = defineStore('AuthStore', () => {
    */
   const refreshToken = async (token: string) => {
     try {
-      await transfer(await refresh({ token }))
+      await transfer(
+        await refresh({
+          refreshToken: token
+        })
+      )
     } catch (error) {
       console.error(error)
     }

@@ -6,18 +6,22 @@ import { reactive } from 'vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { useRouter } from 'vue-router'
 import { useLoadingStore } from '@/stores/loadingStore'
+import { useAuthStore } from '@/stores/auth'
+import { login } from '@/api/auth'
+import type { LoginRequest } from '@/types/api'
 
 const { toast } = useToast()
 const router = useRouter()
 const loading = useLoadingStore()
+const authStore = useAuthStore()
 
-const form = reactive({
-  email: '',
+const form = reactive<LoginRequest>({
+  username: '',
   password: ''
 })
 
-const handleSubmit = () => {
-  if (!form.email || !form.password) {
+const handleSubmit = async () => {
+  if (!form.username || !form.password) {
     toast({
       title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
       variant: 'destructive',
@@ -26,27 +30,25 @@ const handleSubmit = () => {
     return
   }
 
-  if (form.email !== 'admin' && form.password !== 'admin') {
-    toast({
-      title: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
-      variant: 'destructive',
-      duration: 3000
-    })
-    return
+  loading.start()
+  try {
+    const res = await login(form)
+    if (res.status === 200 && res.data) {
+      authStore.transfer(res)
+      toast({
+        title: 'เข้าสู่ระบบสำเร็จ',
+        duration: 3000
+      })
+
+      router.push({
+        name: 'dashboard'
+      })
+    }
+  } catch (error) {
+    console.error(error)
   }
 
-  loading.start()
-
-  // delay 3 seconds
-  setTimeout(() => {
-    loading.stop()
-    toast({
-      title: 'เข้าสู่ระบบสำเร็จ',
-      duration: 3000
-    })
-
-    router.push('/')
-  }, 3000)
+  loading.stop()
 }
 </script>
 
@@ -71,27 +73,15 @@ const handleSubmit = () => {
         </div>
         <div class="grid gap-4">
           <div class="grid gap-2">
-            <Label for="email">อีเมล</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="email@example.com"
-              required
-              v-model="form.email"
-            />
+            <Label for="email">ชื่อผู้ใช้</Label>
+            <Input type="email" placeholder="username" required v-model="form.username" />
           </div>
           <div class="grid gap-2">
             <div class="flex items-center">
               <Label for="password">รหัสผ่าน</Label>
               <!-- <a href="#" class="ml-auto inline-block text-sm underline"> ลืมรหัสผ่าน? </a> -->
             </div>
-            <Input
-              id="password"
-              type="password"
-              placeholder="********"
-              required
-              v-model="form.password"
-            />
+            <Input type="password" placeholder="********" required v-model="form.password" />
           </div>
           <Button type="submit" class="w-full" @click="handleSubmit"> เข้าสู่ระบบ </Button>
           <!-- <Button variant="outline" class="w-full"> เข้าสู่ระบบด้วย Google </Button> -->
