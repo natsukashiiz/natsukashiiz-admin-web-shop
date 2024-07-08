@@ -138,6 +138,11 @@ const router = createRouter({
               path: 'create',
               name: 'manager-create',
               component: () => import('@/views/dashboard/managers/ManagerCreateView.vue')
+            },
+            {
+              path: 'edit/:id',
+              name: 'manager-edit',
+              component: () => import('@/views/dashboard/managers/ManagerEditView.vue')
             }
           ]
         },

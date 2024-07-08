@@ -193,23 +193,23 @@ const handlePageChange = (page: number) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="customer in managers" :key="customer.id">
+          <TableRow v-for="manager in managers" :key="manager.id">
             <TableCell class="font-medium">
-              {{ customer.id }}
+              {{ manager.id }}
             </TableCell>
             <TableCell>
-              {{ customer.username }}
+              {{ manager.username }}
             </TableCell>
             <TableCell>
-              {{ customer.role }}
+              {{ manager.role }}
             </TableCell>
             <TableCell>
               <Badge variant="outline">
-                {{ customer.status }}
+                {{ manager.status }}
               </Badge>
             </TableCell>
             <TableCell class="hidden md:table-cell">
-              {{ customer.createdAt }}
+              {{ manager.createdAt }}
             </TableCell>
             <TableCell>
               <DropdownMenu>
@@ -221,12 +221,11 @@ const handlePageChange = (page: number) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
-                  <!-- <DropdownMenuItem as-child class="cursor-pointer">
-                    <router-link :to="{ name: 'customer-edit', params: { id: customer.id } }">
+                  <DropdownMenuItem as-child class="cursor-pointer">
+                    <router-link :to="{ name: 'manager-edit', params: { id: manager.id } }">
                       แก้ไข
                     </router-link>
-                  </DropdownMenuItem> -->
-                  <DropdownMenuItem disabled>แก้ไข</DropdownMenuItem>
+                  </DropdownMenuItem>
                   <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
