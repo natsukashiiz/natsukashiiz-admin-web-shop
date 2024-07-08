@@ -4,15 +4,20 @@ import { Toggle, type ToggleEmits, type ToggleProps, useForwardPropsEmits } from
 import { type ToggleVariants, toggleVariants } from '.'
 import { cn } from '@/lib/utils'
 
-const props = withDefaults(defineProps<ToggleProps & {
-  class?: HTMLAttributes['class']
-  variant?: ToggleVariants['variant']
-  size?: ToggleVariants['size']
-}>(), {
-  variant: 'default',
-  size: 'default',
-  disabled: false,
-})
+const props = withDefaults(
+  defineProps<
+    ToggleProps & {
+      class?: HTMLAttributes['class']
+      variant?: ToggleVariants['variant']
+      size?: ToggleVariants['size']
+    }
+  >(),
+  {
+    variant: 'default',
+    size: 'default',
+    disabled: false
+  }
+)
 
 const emits = defineEmits<ToggleEmits>()
 
@@ -26,10 +31,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
 
 <template>
-  <Toggle
-    v-bind="forwarded"
-    :class="cn(toggleVariants({ variant, size }), props.class)"
-  >
+  <Toggle v-bind="forwarded" :class="cn(toggleVariants({ variant, size }), props.class)">
     <slot />
   </Toggle>
 </template>

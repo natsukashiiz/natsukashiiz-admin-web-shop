@@ -35,25 +35,23 @@ interface TableColumn {
 
 const colums: TableColumn[] = [
   {
-    key: 'image',
-    label: 'รูปภาพ',
-    hidden: true,
-    class: 'hidden sm:table-cell'
+    key: 'id',
+    label: 'ID'
   },
   {
-    key: 'title',
-    label: 'ชื่อ'
+    key: 'username',
+    label: 'ชื่อผู้ใช้'
   },
   {
-    key: 'sort',
-    label: 'ลำดับ'
+    key: 'role',
+    label: 'บทบาท'
   },
   {
     key: 'status',
     label: 'สถานะ'
   },
   {
-    key: 'created_at',
+    key: 'createdAt',
     label: 'วันที่สร้าง',
     class: 'hidden md:table-cell'
   },
@@ -64,63 +62,56 @@ const colums: TableColumn[] = [
   }
 ]
 
-const carousels = ref([
+const managers = [
   {
     id: 1,
-    name: 'ภาพสไลด์ 1',
-    sort: 1,
+    username: 'admin1',
+    role: 'admin',
     status: 'active',
-    createdAt: '2021-09-01',
-    image: 'https://www.shadcn-vue.com/placeholder.svg'
+    createdAt: '2021-09-01'
   },
   {
     id: 2,
-    name: 'ภาพสไลด์ 2',
-    sort: 2,
-    status: 'draft',
-    createdAt: '2021-09-02',
-    image: 'https://www.shadcn-vue.com/placeholder.svg'
+    username: 'user2',
+    role: 'user',
+    status: 'active',
+    createdAt: '2021-10-01'
   },
   {
     id: 3,
-    name: 'ภาพสไลด์ 3',
-    sort: 3,
-    status: 'archived',
-    createdAt: '2021-09-03',
-    image: 'https://www.shadcn-vue.com/placeholder.svg'
+    username: 'user3',
+    role: 'user',
+    status: 'active',
+    createdAt: '2021-11-01'
   },
   {
     id: 4,
-    name: 'ภาพสไลด์ 4',
-    sort: 4,
+    username: 'admin2',
+    role: 'admin',
     status: 'active',
-    createdAt: '2021-09-04',
-    image: 'https://www.shadcn-vue.com/placeholder.svg'
+    createdAt: '2021-12-01'
   },
   {
     id: 5,
-    name: 'ภาพสไลด์ 5',
-    sort: 5,
-    status: 'draft',
-    createdAt: '2021-09-05',
-    image: 'https://www.shadcn-vue.com/placeholder.svg'
+    username: 'user4',
+    role: 'user',
+    status: 'active',
+    createdAt: '2022-01-01'
   },
   {
     id: 6,
-    name: 'ภาพสไลด์ 6',
-    sort: 6,
-    status: 'archived',
-    createdAt: '2021-09-06',
-    image: 'https://www.shadcn-vue.com/placeholder.svg'
+    username: 'user5',
+    role: 'user',
+    status: 'active',
+    createdAt: '2022-02-01'
   }
-])
-
+]
 const search = ref('')
 const filter = ref('')
 const fileters = [
   { status: 'active', label: 'เปิดใช้งาน' },
-  { status: 'draft', label: 'ฉบับร่าง' },
-  { status: 'archived', label: 'จัดเก็บ' }
+  { status: 'inactive', label: 'ปิดใช้งาน' },
+  { status: 'deleted', label: 'ลบ' }
 ]
 
 const pagination = reactive({
@@ -150,7 +141,7 @@ const handlePageChange = (page: number) => {
         <Input
           v-model="search"
           type="search"
-          placeholder="ค้นหาภาพสไลด์"
+          placeholder="ค้นหาผู้จัดการ"
           class="w-full appearance-none bg-background pl-8 shadow-none"
         />
       </div>
@@ -178,18 +169,17 @@ const handlePageChange = (page: number) => {
         <File class="h-3.5 w-3.5" />
         <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> ส่งออก </span>
       </Button>
-      <router-link to="/carousels/create">
+      <router-link to="/manager/create">
         <Button size="sm" class="h-7 gap-1">
           <PlusCircle class="h-3.5 w-3.5" />
-          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มภาพสไลด์ </span>
+          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มผู้จัดการ </span>
         </Button>
       </router-link>
     </div>
   </div>
   <Card>
     <CardHeader>
-      <CardTitle>รายการภาพสไลด์</CardTitle>
-      <CardDescription> จัดการผลิตภัณฑ์ของคุณและดูประสิทธิภาพการขาย </CardDescription>
+      <CardTitle>รายการผู้จัดการ</CardTitle>
     </CardHeader>
     <CardContent>
       <Table>
@@ -203,29 +193,23 @@ const handlePageChange = (page: number) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="carousel in carousels" :key="carousel.id">
-            <TableCell class="hidden sm:table-cell">
-              <img
-                :src="carousel.image"
-                :alt="carousel.name"
-                class="aspect-square rounded-md object-cover"
-                height="64"
-                width="64"
-              />
-            </TableCell>
+          <TableRow v-for="manager in managers" :key="manager.id">
             <TableCell class="font-medium">
-              {{ carousel.name }}
+              {{ manager.id }}
             </TableCell>
             <TableCell>
-              {{ carousel.sort }}
+              {{ manager.username }}
+            </TableCell>
+            <TableCell>
+              {{ manager.role }}
             </TableCell>
             <TableCell>
               <Badge variant="outline">
-                {{ carousel.status }}
+                {{ manager.status }}
               </Badge>
             </TableCell>
             <TableCell class="hidden md:table-cell">
-              {{ carousel.createdAt }}
+              {{ manager.createdAt }}
             </TableCell>
             <TableCell>
               <DropdownMenu>
@@ -238,11 +222,11 @@ const handlePageChange = (page: number) => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
                   <DropdownMenuItem as-child class="cursor-pointer">
-                    <router-link :to="{ name: 'carousel-edit', params: { id: carousel.id } }">
+                    <router-link :to="{ name: 'manager-edit', params: { id: manager.id } }">
                       แก้ไข
                     </router-link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>ลบ</DropdownMenuItem>
+                  <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

@@ -41,45 +41,19 @@ const colums: TableColumn[] = [
     class: 'hidden sm:table-cell'
   },
   {
-    key: 'code',
-    label: 'รหัส'
+    key: 'title',
+    label: 'ชื่อ'
   },
   {
-    key: 'discount',
-    label: 'ส่วนลด'
-  },
-  {
-    key: 'type',
-    label: 'ประเภท'
-  },
-  {
-    key: 'minOrderPrice',
-    label: 'ยอดขั้นต่ำ'
-  },
-  {
-    key: 'maxDiscount',
-    label: 'ลดสูงสุด'
-  },
-  {
-    key: 'quantity',
-    label: 'จำนวน'
-  },
-  {
-    key: 'beginAt',
-    label: 'เริ่มต้น',
-    class: 'hidden md:table-cell'
-  },
-  {
-    key: 'endAt',
-    label: 'สิ้นสุด',
-    class: 'hidden md:table-cell'
+    key: 'sort',
+    label: 'ลำดับ'
   },
   {
     key: 'status',
     label: 'สถานะ'
   },
   {
-    key: 'createdAt',
+    key: 'created_at',
     label: 'วันที่สร้าง',
     class: 'hidden md:table-cell'
   },
@@ -90,50 +64,57 @@ const colums: TableColumn[] = [
   }
 ]
 
-const vouchers = [
+const carousels = ref([
   {
     id: 1,
-    code: '123456',
-    discount: 10,
-    type: 'percent',
-    minOrderPrice: 1000,
-    maxDiscount: 100,
-    quantity: 100,
-    beginAt: '2021-09-01',
-    endAt: '2021-09-30',
+    name: 'ภาพสไลด์ 1',
+    sort: 1,
     status: 'active',
     createdAt: '2021-09-01',
     image: 'https://www.shadcn-vue.com/placeholder.svg'
   },
   {
     id: 2,
-    code: '654321',
-    discount: 100,
-    type: 'amount',
-    minOrderPrice: 1000,
-    maxDiscount: 100,
-    quantity: 100,
-    beginAt: '2021-09-01',
-    endAt: '2021-09-30',
-    status: 'expired',
-    createdAt: '2021-09-01',
+    name: 'ภาพสไลด์ 2',
+    sort: 2,
+    status: 'draft',
+    createdAt: '2021-09-02',
     image: 'https://www.shadcn-vue.com/placeholder.svg'
   },
   {
     id: 3,
-    code: '654321',
-    discount: 100,
-    type: 'amount',
-    minOrderPrice: 1000,
-    maxDiscount: 100,
-    quantity: 100,
-    beginAt: '2021-09-01',
-    endAt: '2021-09-30',
-    status: 'expired',
-    createdAt: '2021-09-01',
+    name: 'ภาพสไลด์ 3',
+    sort: 3,
+    status: 'archived',
+    createdAt: '2021-09-03',
+    image: 'https://www.shadcn-vue.com/placeholder.svg'
+  },
+  {
+    id: 4,
+    name: 'ภาพสไลด์ 4',
+    sort: 4,
+    status: 'active',
+    createdAt: '2021-09-04',
+    image: 'https://www.shadcn-vue.com/placeholder.svg'
+  },
+  {
+    id: 5,
+    name: 'ภาพสไลด์ 5',
+    sort: 5,
+    status: 'draft',
+    createdAt: '2021-09-05',
+    image: 'https://www.shadcn-vue.com/placeholder.svg'
+  },
+  {
+    id: 6,
+    name: 'ภาพสไลด์ 6',
+    sort: 6,
+    status: 'archived',
+    createdAt: '2021-09-06',
     image: 'https://www.shadcn-vue.com/placeholder.svg'
   }
-]
+])
+
 const search = ref('')
 const filter = ref('')
 const fileters = [
@@ -169,7 +150,7 @@ const handlePageChange = (page: number) => {
         <Input
           v-model="search"
           type="search"
-          placeholder="ค้นหาคูปอง"
+          placeholder="ค้นหาภาพสไลด์"
           class="w-full appearance-none bg-background pl-8 shadow-none"
         />
       </div>
@@ -197,17 +178,17 @@ const handlePageChange = (page: number) => {
         <File class="h-3.5 w-3.5" />
         <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> ส่งออก </span>
       </Button>
-      <router-link to="/vouchers/create">
+      <router-link to="/carousel/create">
         <Button size="sm" class="h-7 gap-1">
           <PlusCircle class="h-3.5 w-3.5" />
-          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มคูปอง </span>
+          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มภาพสไลด์ </span>
         </Button>
       </router-link>
     </div>
   </div>
   <Card>
     <CardHeader>
-      <CardTitle>รายการคูปอง</CardTitle>
+      <CardTitle>รายการภาพสไลด์</CardTitle>
       <CardDescription> จัดการผลิตภัณฑ์ของคุณและดูประสิทธิภาพการขาย </CardDescription>
     </CardHeader>
     <CardContent>
@@ -222,51 +203,29 @@ const handlePageChange = (page: number) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="voucher in vouchers" :key="voucher.id">
+          <TableRow v-for="carousel in carousels" :key="carousel.id">
             <TableCell class="hidden sm:table-cell">
               <img
-                :src="voucher.image"
-                :alt="voucher.code"
+                :src="carousel.image"
+                :alt="carousel.name"
                 class="aspect-square rounded-md object-cover"
                 height="64"
                 width="64"
               />
             </TableCell>
             <TableCell class="font-medium">
-              {{ voucher.code }}
+              {{ carousel.name }}
             </TableCell>
             <TableCell>
-              <Badge :variant="voucher.type === 'percent' ? 'secondary' : 'secondary'">
-                {{ voucher.discount }}{{ voucher.type === 'percent' ? '%' : '฿' }}
-              </Badge>
+              {{ carousel.sort }}
             </TableCell>
             <TableCell>
-              <Badge :variant="voucher.type === 'active' ? 'default' : 'secondary'">
-                {{ voucher.type === 'percent' ? 'เปอร์เซ็นต์' : 'จำนวนเงิน' }}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              {{ voucher.minOrderPrice }}
-            </TableCell>
-            <TableCell>
-              {{ voucher.maxDiscount }}
-            </TableCell>
-            <TableCell>
-              {{ voucher.quantity }}
-            </TableCell>
-            <TableCell class="hidden md:table-cell">
-              {{ voucher.beginAt }}
-            </TableCell>
-            <TableCell class="hidden md:table-cell">
-              {{ voucher.endAt }}
-            </TableCell>
-            <TableCell>
-              <Badge :variant="voucher.status === 'active' ? 'default' : 'secondary'">
-                {{ voucher.status }}
+              <Badge variant="outline">
+                {{ carousel.status }}
               </Badge>
             </TableCell>
             <TableCell class="hidden md:table-cell">
-              {{ voucher.createdAt }}
+              {{ carousel.createdAt }}
             </TableCell>
             <TableCell>
               <DropdownMenu>
@@ -279,7 +238,7 @@ const handlePageChange = (page: number) => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
                   <DropdownMenuItem as-child class="cursor-pointer">
-                    <router-link :to="{ name: 'voucher-edit', params: { id: voucher.id } }">
+                    <router-link :to="{ name: 'carousel-edit', params: { id: carousel.id } }">
                       แก้ไข
                     </router-link>
                   </DropdownMenuItem>

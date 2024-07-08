@@ -39,12 +39,12 @@ const colums: TableColumn[] = [
     label: 'ID'
   },
   {
-    key: 'username',
-    label: 'ชื่อผู้ใช้'
+    key: 'email',
+    label: 'อีเมล'
   },
   {
-    key: 'role',
-    label: 'บทบาท'
+    key: 'nick',
+    label: 'ชื่อผู้ใช้'
   },
   {
     key: 'status',
@@ -62,46 +62,46 @@ const colums: TableColumn[] = [
   }
 ]
 
-const managers = [
+const customers = [
   {
     id: 1,
-    username: 'admin1',
-    role: 'admin',
+    email: 'cutomer1@email.com',
+    nick: 'customer1',
     status: 'active',
     createdAt: '2021-09-01'
   },
   {
     id: 2,
-    username: 'user2',
-    role: 'user',
+    email: 'customer2@email.com',
+    nick: 'customer2',
     status: 'active',
     createdAt: '2021-10-01'
   },
   {
     id: 3,
-    username: 'user3',
-    role: 'user',
+    email: 'customer3@email.com',
+    nick: 'customer3',
     status: 'active',
     createdAt: '2021-11-01'
   },
   {
     id: 4,
-    username: 'admin2',
-    role: 'admin',
+    email: 'customer4@email.com',
+    nick: 'customer4',
     status: 'active',
     createdAt: '2021-12-01'
   },
   {
     id: 5,
-    username: 'user4',
-    role: 'user',
+    email: 'customer5@email.com',
+    nick: 'customer5',
     status: 'active',
     createdAt: '2022-01-01'
   },
   {
     id: 6,
-    username: 'user5',
-    role: 'user',
+    email: 'customer6@email.com',
+    nick: 'customer6',
     status: 'active',
     createdAt: '2022-02-01'
   }
@@ -141,7 +141,7 @@ const handlePageChange = (page: number) => {
         <Input
           v-model="search"
           type="search"
-          placeholder="ค้นหาผู้จัดการ"
+          placeholder="ค้นหาลูกค้า"
           class="w-full appearance-none bg-background pl-8 shadow-none"
         />
       </div>
@@ -169,17 +169,18 @@ const handlePageChange = (page: number) => {
         <File class="h-3.5 w-3.5" />
         <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> ส่งออก </span>
       </Button>
-      <router-link to="/managers/create">
+      <!-- <router-link to="/customer/create">
         <Button size="sm" class="h-7 gap-1">
           <PlusCircle class="h-3.5 w-3.5" />
-          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มผู้จัดการ </span>
+          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มลูกค้า </span>
         </Button>
-      </router-link>
+      </router-link> -->
     </div>
   </div>
   <Card>
     <CardHeader>
-      <CardTitle>รายการผู้จัดการ</CardTitle>
+      <CardTitle>รายการลูกค้า</CardTitle>
+      <CardDescription> จัดการผลิตภัณฑ์ของคุณและดูประสิทธิภาพการขาย </CardDescription>
     </CardHeader>
     <CardContent>
       <Table>
@@ -193,23 +194,23 @@ const handlePageChange = (page: number) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="manager in managers" :key="manager.id">
+          <TableRow v-for="customer in customers" :key="customer.id">
             <TableCell class="font-medium">
-              {{ manager.id }}
+              {{ customer.id }}
             </TableCell>
             <TableCell>
-              {{ manager.username }}
+              {{ customer.email }}
             </TableCell>
             <TableCell>
-              {{ manager.role }}
+              {{ customer.nick }}
             </TableCell>
             <TableCell>
               <Badge variant="outline">
-                {{ manager.status }}
+                {{ customer.status }}
               </Badge>
             </TableCell>
             <TableCell class="hidden md:table-cell">
-              {{ manager.createdAt }}
+              {{ customer.createdAt }}
             </TableCell>
             <TableCell>
               <DropdownMenu>
@@ -221,11 +222,11 @@ const handlePageChange = (page: number) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
-                  <DropdownMenuItem as-child class="cursor-pointer">
-                    <router-link :to="{ name: 'manager-edit', params: { id: manager.id } }">
+                  <!-- <DropdownMenuItem as-child class="cursor-pointer">
+                    <router-link :to="{ name: 'customer-edit', params: { id: customer.id } }">
                       แก้ไข
                     </router-link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> -->
                   <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

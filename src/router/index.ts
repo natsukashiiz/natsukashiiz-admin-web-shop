@@ -25,124 +25,124 @@ const router = createRouter({
           component: () => import('@/views/dashboard/OrdersView.vue')
         },
         {
-          path: '/products',
-          name: 'products',
-          redirect: '/products/list',
+          path: '/product',
+          name: 'product',
+          redirect: '/product/list',
           children: [
             {
               path: 'list',
-              name: 'products-list',
-              component: () => import('@/views/dashboard/products/ProductListView.vue')
+              name: 'product-list',
+              component: () => import('@/views/dashboard/product/ProductListView.vue')
             },
             {
               path: 'create',
               name: 'product-create',
-              component: () => import('@/views/dashboard/products/ProductCreateView.vue')
+              component: () => import('@/views/dashboard/product/ProductCreateView.vue')
             },
             {
               path: 'edit/:id',
               name: 'product-edit',
-              component: () => import('@/views/dashboard/products/ProductEditView.vue')
+              component: () => import('@/views/dashboard/product/ProductEditView.vue')
             }
           ]
         },
         {
-          path: '/categories',
-          name: 'categories',
-          redirect: '/categories/list',
+          path: '/category',
+          name: 'category',
+          redirect: '/category/list',
           children: [
             {
               path: 'list',
               name: 'category-list',
-              component: () => import('@/views/dashboard/categories/CategoryListView.vue')
+              component: () => import('@/views/dashboard/category/CategoryListView.vue')
             },
             {
               path: 'create',
               name: 'category-create',
-              component: () => import('@/views/dashboard/categories/CategoryCreateView.vue')
+              component: () => import('@/views/dashboard/category/CategoryCreateView.vue')
             },
             {
               path: 'edit/:id',
               name: 'category-edit',
-              component: () => import('@/views/dashboard/categories/CategoryEditView.vue')
+              component: () => import('@/views/dashboard/category/CategoryEditView.vue')
             }
           ]
         },
         {
-          path: '/vouchers',
-          name: 'vouchers',
-          redirect: '/vouchers/list',
+          path: '/voucher',
+          name: 'voucher',
+          redirect: '/voucher/list',
           children: [
             {
               path: 'list',
               name: 'voucher-list',
-              component: () => import('@/views/dashboard/vouchers/VoucherListView.vue')
+              component: () => import('@/views/dashboard/voucher/VoucherListView.vue')
             },
             {
               path: 'create',
               name: 'voucher-create',
-              component: () => import('@/views/dashboard/vouchers/VoucherCreateView.vue')
+              component: () => import('@/views/dashboard/voucher/VoucherCreateView.vue')
             },
             {
               path: 'edit/:id',
               name: 'voucher-edit',
-              component: () => import('@/views/dashboard/vouchers/VoucherEditView.vue')
+              component: () => import('@/views/dashboard/voucher/VoucherEditView.vue')
             }
           ]
         },
         {
-          path: '/carousels',
-          name: 'carousels',
-          redirect: '/carousels/list',
+          path: '/carousel',
+          name: 'carousel',
+          redirect: '/carousel/list',
           children: [
             {
               path: 'list',
               name: 'carousel-list',
-              component: () => import('@/views/dashboard/carousels/CarouselListView.vue')
+              component: () => import('@/views/dashboard/carousel/CarouselListView.vue')
             },
             {
               path: 'create',
               name: 'carousel-create',
-              component: () => import('@/views/dashboard/carousels/CarouselCreateView.vue')
+              component: () => import('@/views/dashboard/carousel/CarouselCreateView.vue')
             },
             {
               path: 'edit/:id',
               name: 'carousel-edit',
-              component: () => import('@/views/dashboard/carousels/CarouselEditView.vue')
+              component: () => import('@/views/dashboard/carousel/CarouselEditView.vue')
             }
           ]
         },
         {
-          path: '/customers',
-          name: 'customers',
-          redirect: '/customers/list',
+          path: '/customer',
+          name: 'customer',
+          redirect: '/customer/list',
           children: [
             {
               path: 'list',
               name: 'customer-list',
-              component: () => import('@/views/dashboard/customers/CustomerListView.vue')
+              component: () => import('@/views/dashboard/customer/CustomerListView.vue')
             }
           ]
         },
         {
-          path: '/managers',
-          name: 'managers',
-          redirect: '/managers/list',
+          path: '/manager',
+          name: 'manager',
+          redirect: '/manager/list',
           children: [
             {
               path: 'list',
               name: 'manager-list',
-              component: () => import('@/views/dashboard/managers/ManagerListView.vue')
+              component: () => import('@/views/dashboard/manager/ManagerListView.vue')
             },
             {
               path: 'create',
               name: 'manager-create',
-              component: () => import('@/views/dashboard/managers/ManagerCreateView.vue')
+              component: () => import('@/views/dashboard/manager/ManagerCreateView.vue')
             },
             {
               path: 'edit/:id',
               name: 'manager-edit',
-              component: () => import('@/views/dashboard/managers/ManagerEditView.vue')
+              component: () => import('@/views/dashboard/manager/ManagerEditView.vue')
             }
           ]
         },

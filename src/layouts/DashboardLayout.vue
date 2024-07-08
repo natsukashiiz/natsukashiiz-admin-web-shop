@@ -33,103 +33,109 @@ const menus: MenuItem[] = [
   },
   {
     title: 'สินค้า',
-    name: 'products',
+    name: 'product',
     icon: Package,
     children: [
       {
         title: 'รายการสินค้า',
-        name: 'products-list',
-        href: '/products/list',
+        name: 'product-list',
+        href: '/product/list',
         icon: List
       },
       {
         title: 'เพิ่มสินค้า',
-        name: 'products-create',
-        href: '/products/create',
+        name: 'product-create',
+        href: '/product/create',
         icon: PackagePlus
       }
     ]
   },
   {
     title: 'หมวดหมู่',
-    name: 'categories',
+    name: 'category',
     icon: LayoutList,
     children: [
       {
         title: 'รายการหมวดหมู่',
-        name: 'categories-list',
-        href: '/categories/list',
+        name: 'category-list',
+        href: '/category/list',
         icon: List
       },
       {
         title: 'เพิ่มหมวดหมู่',
-        name: 'categories-create',
-        href: '/categories/create',
+        name: 'category-create',
+        href: '/category/create',
         icon: PackagePlus
       }
     ]
   },
   {
     title: 'คูปอง',
-    name: 'vouchers',
+    name: 'voucher',
     icon: Ticket,
     children: [
       {
         title: 'รายการคูปอง',
-        name: 'vouchers-list',
-        href: '/vouchers/list',
+        name: 'voucher-list',
+        href: '/voucher/list',
         icon: List
       },
       {
         title: 'เพิ่มคูปอง',
-        name: 'vouchers-create',
-        href: '/vouchers/create',
+        name: 'voucher-create',
+        href: '/voucher/create',
         icon: PackagePlus
       }
     ]
   },
   {
     title: 'ภาพสไลด์',
-    name: 'carousels',
+    name: 'carousel',
     icon: GalleryThumbnails,
     children: [
       {
         title: 'รายการภาพสไลด์',
-        name: 'carousels-list',
-        href: '/carousels/list',
+        name: 'carousel-list',
+        href: '/carousel/list',
         icon: List
       },
       {
         title: 'เพิ่มภาพสไลด์',
-        name: 'carousels-create',
-        href: '/carousels/create',
+        name: 'carousel-create',
+        href: '/carousel/create',
         icon: PackagePlus
       }
     ]
   },
   {
     title: 'ลูกค้า',
-    name: 'customers',
+    name: 'customer',
     icon: Users,
     children: [
       {
         title: 'รายการลูกค้า',
-        name: 'customers-list',
-        href: '/customers/list',
+        name: 'customer-list',
+        href: '/customer/list',
         icon: List
       }
     ]
   },
   {
     title: 'ผู้จัดการ',
-    name: 'managers',
+    name: 'manager',
     icon: UserRoundCog,
     children: [
       {
         title: 'รายการผู้จัดการ',
-        name: 'managers-list',
-        href: '/managers/list',
+        name: 'manager-list',
+        href: '/manager/list',
         icon: List
+      },
+      {
+        title: 'เพิ่มผู้จัดการ',
+        name: 'manager-create',
+        href: '/manager/create',
+        icon: PackagePlus
       }
     ]
   }

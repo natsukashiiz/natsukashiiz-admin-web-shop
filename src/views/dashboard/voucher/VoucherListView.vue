@@ -35,16 +35,44 @@ interface TableColumn {
 
 const colums: TableColumn[] = [
   {
-    key: 'id',
-    label: 'ID'
+    key: 'image',
+    label: 'รูปภาพ',
+    hidden: true,
+    class: 'hidden sm:table-cell'
   },
   {
-    key: 'email',
-    label: 'อีเมล'
+    key: 'code',
+    label: 'รหัส'
   },
   {
-    key: 'nick',
-    label: 'ชื่อผู้ใช้'
+    key: 'discount',
+    label: 'ส่วนลด'
+  },
+  {
+    key: 'type',
+    label: 'ประเภท'
+  },
+  {
+    key: 'minOrderPrice',
+    label: 'ยอดขั้นต่ำ'
+  },
+  {
+    key: 'maxDiscount',
+    label: 'ลดสูงสุด'
+  },
+  {
+    key: 'quantity',
+    label: 'จำนวน'
+  },
+  {
+    key: 'beginAt',
+    label: 'เริ่มต้น',
+    class: 'hidden md:table-cell'
+  },
+  {
+    key: 'endAt',
+    label: 'สิ้นสุด',
+    class: 'hidden md:table-cell'
   },
   {
     key: 'status',
@@ -62,56 +90,56 @@ const colums: TableColumn[] = [
   }
 ]
 
-const customers = [
+const vouchers = [
   {
     id: 1,
-    email: 'cutomer1@email.com',
-    nick: 'customer1',
+    code: '123456',
+    discount: 10,
+    type: 'percent',
+    minOrderPrice: 1000,
+    maxDiscount: 100,
+    quantity: 100,
+    beginAt: '2021-09-01',
+    endAt: '2021-09-30',
     status: 'active',
-    createdAt: '2021-09-01'
+    createdAt: '2021-09-01',
+    image: 'https://www.shadcn-vue.com/placeholder.svg'
   },
   {
     id: 2,
-    email: 'customer2@email.com',
-    nick: 'customer2',
-    status: 'active',
-    createdAt: '2021-10-01'
+    code: '654321',
+    discount: 100,
+    type: 'amount',
+    minOrderPrice: 1000,
+    maxDiscount: 100,
+    quantity: 100,
+    beginAt: '2021-09-01',
+    endAt: '2021-09-30',
+    status: 'expired',
+    createdAt: '2021-09-01',
+    image: 'https://www.shadcn-vue.com/placeholder.svg'
   },
   {
     id: 3,
-    email: 'customer3@email.com',
-    nick: 'customer3',
-    status: 'active',
-    createdAt: '2021-11-01'
-  },
-  {
-    id: 4,
-    email: 'customer4@email.com',
-    nick: 'customer4',
-    status: 'active',
-    createdAt: '2021-12-01'
-  },
-  {
-    id: 5,
-    email: 'customer5@email.com',
-    nick: 'customer5',
-    status: 'active',
-    createdAt: '2022-01-01'
-  },
-  {
-    id: 6,
-    email: 'customer6@email.com',
-    nick: 'customer6',
-    status: 'active',
-    createdAt: '2022-02-01'
+    code: '654321',
+    discount: 100,
+    type: 'amount',
+    minOrderPrice: 1000,
+    maxDiscount: 100,
+    quantity: 100,
+    beginAt: '2021-09-01',
+    endAt: '2021-09-30',
+    status: 'expired',
+    createdAt: '2021-09-01',
+    image: 'https://www.shadcn-vue.com/placeholder.svg'
   }
 ]
 const search = ref('')
 const filter = ref('')
 const fileters = [
   { status: 'active', label: 'เปิดใช้งาน' },
-  { status: 'inactive', label: 'ปิดใช้งาน' },
-  { status: 'deleted', label: 'ลบ' }
+  { status: 'draft', label: 'ฉบับร่าง' },
+  { status: 'archived', label: 'จัดเก็บ' }
 ]
 
 const pagination = reactive({
@@ -141,7 +169,7 @@ const handlePageChange = (page: number) => {
         <Input
           v-model="search"
           type="search"
-          placeholder="ค้นหาลูกค้า"
+          placeholder="ค้นหาคูปอง"
           class="w-full appearance-none bg-background pl-8 shadow-none"
         />
       </div>
@@ -169,17 +197,17 @@ const handlePageChange = (page: number) => {
         <File class="h-3.5 w-3.5" />
         <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> ส่งออก </span>
       </Button>
-      <router-link to="/customers/create">
+      <router-link to="/voucher/create">
         <Button size="sm" class="h-7 gap-1">
           <PlusCircle class="h-3.5 w-3.5" />
-          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มลูกค้า </span>
+          <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มคูปอง </span>
         </Button>
       </router-link>
     </div>
   </div>
   <Card>
     <CardHeader>
-      <CardTitle>รายการลูกค้า</CardTitle>
+      <CardTitle>รายการคูปอง</CardTitle>
       <CardDescription> จัดการผลิตภัณฑ์ของคุณและดูประสิทธิภาพการขาย </CardDescription>
     </CardHeader>
     <CardContent>
@@ -194,23 +222,51 @@ const handlePageChange = (page: number) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="customer in customers" :key="customer.id">
+          <TableRow v-for="voucher in vouchers" :key="voucher.id">
+            <TableCell class="hidden sm:table-cell">
+              <img
+                :src="voucher.image"
+                :alt="voucher.code"
+                class="aspect-square rounded-md object-cover"
+                height="64"
+                width="64"
+              />
+            </TableCell>
             <TableCell class="font-medium">
-              {{ customer.id }}
+              {{ voucher.code }}
             </TableCell>
             <TableCell>
-              {{ customer.email }}
+              <Badge :variant="voucher.type === 'percent' ? 'secondary' : 'secondary'">
+                {{ voucher.discount }}{{ voucher.type === 'percent' ? '%' : '฿' }}
+              </Badge>
             </TableCell>
             <TableCell>
-              {{ customer.nick }}
+              <Badge :variant="voucher.type === 'active' ? 'default' : 'secondary'">
+                {{ voucher.type === 'percent' ? 'เปอร์เซ็นต์' : 'จำนวนเงิน' }}
+              </Badge>
             </TableCell>
             <TableCell>
-              <Badge variant="outline">
-                {{ customer.status }}
+              {{ voucher.minOrderPrice }}
+            </TableCell>
+            <TableCell>
+              {{ voucher.maxDiscount }}
+            </TableCell>
+            <TableCell>
+              {{ voucher.quantity }}
+            </TableCell>
+            <TableCell class="hidden md:table-cell">
+              {{ voucher.beginAt }}
+            </TableCell>
+            <TableCell class="hidden md:table-cell">
+              {{ voucher.endAt }}
+            </TableCell>
+            <TableCell>
+              <Badge :variant="voucher.status === 'active' ? 'default' : 'secondary'">
+                {{ voucher.status }}
               </Badge>
             </TableCell>
             <TableCell class="hidden md:table-cell">
-              {{ customer.createdAt }}
+              {{ voucher.createdAt }}
             </TableCell>
             <TableCell>
               <DropdownMenu>
@@ -222,12 +278,12 @@ const handlePageChange = (page: number) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
-                  <!-- <DropdownMenuItem as-child class="cursor-pointer">
-                    <router-link :to="{ name: 'customer-edit', params: { id: customer.id } }">
+                  <DropdownMenuItem as-child class="cursor-pointer">
+                    <router-link :to="{ name: 'voucher-edit', params: { id: voucher.id } }">
                       แก้ไข
                     </router-link>
-                  </DropdownMenuItem> -->
-                  <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>ลบ</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
