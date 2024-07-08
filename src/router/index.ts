@@ -87,6 +87,11 @@ const router = createRouter({
               path: 'create',
               name: 'voucher-create',
               component: () => import('@/views/dashboard/vouchers/VoucherCreateView.vue')
+            },
+            {
+              path: 'edit/:id',
+              name: 'voucher-edit',
+              component: () => import('@/views/dashboard/vouchers/VoucherEditView.vue')
             }
           ]
         },
