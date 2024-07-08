@@ -60,6 +60,11 @@ const router = createRouter({
               path: 'create',
               name: 'category-create',
               component: () => import('@/views/dashboard/categories/CategoryCreateView.vue')
+            },
+            {
+              path: 'edit/:id',
+              name: 'category-edit',
+              component: () => import('@/views/dashboard/categories/CategoryEditView.vue')
             }
           ]
         },
