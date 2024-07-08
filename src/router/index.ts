@@ -55,6 +55,11 @@ const router = createRouter({
               path: 'list',
               name: 'category-list',
               component: () => import('@/views/dashboard/categories/CategoryListView.vue')
+            },
+            {
+              path: 'create',
+              name: 'category-create',
+              component: () => import('@/views/dashboard/categories/CategoryCreateView.vue')
             }
           ]
         },
