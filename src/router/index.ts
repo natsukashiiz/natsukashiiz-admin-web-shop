@@ -133,6 +133,11 @@ const router = createRouter({
               path: 'list',
               name: 'manager-list',
               component: () => import('@/views/dashboard/managers/ManagerListView.vue')
+            },
+            {
+              path: 'create',
+              name: 'manager-create',
+              component: () => import('@/views/dashboard/managers/ManagerCreateView.vue')
             }
           ]
         },

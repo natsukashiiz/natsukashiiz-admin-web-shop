@@ -62,7 +62,7 @@ const colums: TableColumn[] = [
   }
 ]
 
-const customers = [
+const managers = [
   {
     id: 1,
     username: 'admin1',
@@ -169,7 +169,7 @@ const handlePageChange = (page: number) => {
         <File class="h-3.5 w-3.5" />
         <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> ส่งออก </span>
       </Button>
-      <router-link to="/customers/create">
+      <router-link to="/managers/create">
         <Button size="sm" class="h-7 gap-1">
           <PlusCircle class="h-3.5 w-3.5" />
           <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> เพิ่มผู้จัดการ </span>
@@ -193,7 +193,7 @@ const handlePageChange = (page: number) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="customer in customers" :key="customer.id">
+          <TableRow v-for="customer in managers" :key="customer.id">
             <TableCell class="font-medium">
               {{ customer.id }}
             </TableCell>
