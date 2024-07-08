@@ -69,11 +69,6 @@ const router = createRouter({
           ]
         },
         {
-          path: '/customers',
-          name: 'customers',
-          component: () => import('@/views/dashboard/CustomersView.vue')
-        },
-        {
           path: '/vouchers',
           name: 'vouchers',
           redirect: '/vouchers/list',
@@ -114,6 +109,18 @@ const router = createRouter({
               path: 'edit/:id',
               name: 'carousel-edit',
               component: () => import('@/views/dashboard/carousels/CarouselEditView.vue')
+            }
+          ]
+        },
+        {
+          path: '/customers',
+          name: 'customers',
+          redirect: '/customers/list',
+          children: [
+            {
+              path: 'list',
+              name: 'customer-list',
+              component: () => import('@/views/dashboard/customers/CustomerListView.vue')
             }
           ]
         },

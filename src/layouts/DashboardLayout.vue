@@ -110,8 +110,15 @@ const menus: MenuItem[] = [
   {
     title: 'ลูกค้า',
     name: 'customers',
-    href: '/customers',
-    icon: Users
+    icon: Users,
+    children: [
+      {
+        title: 'รายการลูกค้า',
+        name: 'customers-list',
+        href: '/customers/list',
+        icon: List
+      }
+    ]
   },
   {
     title: 'ผู้จัดการ',
