@@ -72,8 +72,21 @@ const menus: MenuItem[] = [
   {
     title: 'คูปอง',
     name: 'vouchers',
-    href: '/vouchers',
-    icon: Ticket
+    icon: Ticket,
+    children: [
+      {
+        title: 'รายการคูปอง',
+        name: 'vouchers-list',
+        href: '/vouchers/list',
+        icon: List
+      },
+      {
+        title: 'เพิ่มคูปอง',
+        name: 'vouchers-create',
+        href: '/vouchers/create',
+        icon: PackagePlus
+      }
+    ]
   },
   {
     title: 'คารูเซล',

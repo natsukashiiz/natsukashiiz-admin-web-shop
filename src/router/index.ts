@@ -82,6 +82,11 @@ const router = createRouter({
               path: 'list',
               name: 'voucher-list',
               component: () => import('@/views/dashboard/vouchers/VoucherListView.vue')
+            },
+            {
+              path: 'create',
+              name: 'voucher-create',
+              component: () => import('@/views/dashboard/vouchers/VoucherCreateView.vue')
             }
           ]
         },
