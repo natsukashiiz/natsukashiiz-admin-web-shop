@@ -98,7 +98,14 @@ const router = createRouter({
         {
           path: '/carousels',
           name: 'carousels',
-          component: () => import('@/views/dashboard/CarouselsView.vue')
+          redirect: '/carousels/list',
+          children: [
+            {
+              path: 'list',
+              name: 'carousel-list',
+              component: () => import('@/views/dashboard/carousels/CarouselListView.vue')
+            }
+          ]
         },
         {
           path: '/managers',

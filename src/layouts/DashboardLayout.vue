@@ -89,7 +89,7 @@ const menus: MenuItem[] = [
     ]
   },
   {
-    title: 'คารูเซล',
+    title: 'ภาพสไลด์',
     name: 'carousels',
     href: '/carousels',
     icon: GalleryThumbnails
