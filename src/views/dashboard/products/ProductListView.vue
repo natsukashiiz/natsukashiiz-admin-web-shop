@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input'
 import { reactive, ref } from 'vue'
 import { computed } from 'vue'
 import CPagination from '@/components/CPagination.vue'
+import type { RouterLink } from 'vue-router'
 
 interface TableColumn {
   key: string
@@ -250,7 +251,11 @@ const handlePageChange = (page: number) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
-                  <DropdownMenuItem>แก้ไข</DropdownMenuItem>
+                  <DropdownMenuItem as-child class="cursor-pointer">
+                    <router-link :to="{ name: 'product-edit', params: { id: product.id } }">
+                      แก้ไข
+                    </router-link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>ลบ</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
