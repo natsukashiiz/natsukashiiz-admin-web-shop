@@ -109,6 +109,11 @@ const router = createRouter({
               path: 'create',
               name: 'carousel-create',
               component: () => import('@/views/dashboard/carousels/CarouselCreateView.vue')
+            },
+            {
+              path: 'edit/:id',
+              name: 'carousel-edit',
+              component: () => import('@/views/dashboard/carousels/CarouselEditView.vue')
             }
           ]
         },
