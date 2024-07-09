@@ -1,34 +1,26 @@
 <script setup lang="ts">
-import { File, ListFilter, MoreHorizontal, Search } from 'lucide-vue-next'
-import { Badge } from '@/components/ui/badge'
+import { File, ListFilter, Search, MoreHorizontal } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
+
 import { Input } from '@/components/ui/input'
 import { reactive, ref } from 'vue'
 import { computed } from 'vue'
-import CPagination from '@/components/CPagination.vue'
+import CTable from '@/components/CTable.vue'
 import { queryCustomerList } from '@/api/customer'
 import type { CustomerResponse } from '@/types/api'
-import type { TableColumn } from '@/types'
+import type { TableColumn, Pagination } from '@/types'
 import { onMounted } from 'vue'
 
-const colums: TableColumn[] = [
+const columns: TableColumn[] = [
   {
     key: 'id',
     label: 'ID'
@@ -43,7 +35,8 @@ const colums: TableColumn[] = [
   },
   {
     key: 'verified',
-    label: 'ยืนยันตัวตน'
+    label: 'ยืนยันตัวตน',
+    class: 'hidden md:table-cell'
   },
   {
     key: 'createdAt',
@@ -57,17 +50,17 @@ const colums: TableColumn[] = [
   }
 ]
 
-const search = ref('')
-const filter = ref('')
+const search = ref<string>()
+const filter = ref<boolean>()
 const fileters = [
-  { status: 'active', label: 'เปิดใช้งาน' },
-  { status: 'inactive', label: 'ปิดใช้งาน' },
-  { status: 'deleted', label: 'ลบ' }
+  { verify: undefined, label: 'ทั้งหมด' },
+  { verify: true, label: 'ยืนยันแล้ว' },
+  { verify: false, label: 'ยังไม่ยืนยัน' }
 ]
 const customers = ref<CustomerResponse[]>([])
-const pagination = reactive({
+const pagination = reactive<Pagination>({
   page: 1,
-  size: 6,
+  size: 10,
   total: 0
 })
 
@@ -75,7 +68,9 @@ const loadManagerList = async () => {
   try {
     const res = await queryCustomerList({
       page: pagination.page,
-      size: pagination.size
+      size: pagination.size,
+      email: search.value,
+      verified: filter.value
     })
     if (res.status === 200 && res.data) {
       customers.value = res.data.list
@@ -86,19 +81,18 @@ const loadManagerList = async () => {
   }
 }
 
-const disabledSearch = computed(() => search.value.length < 1)
-const handleSearch = () => {
-  console.log(search.value)
+const disabledSearch = computed(() => !search.value)
+const handleSearch = async () => {
+  await loadManagerList()
 }
-const handleFilter = (status: string) => {
-  console.log(status)
+const handleFilter = async (status?: boolean) => {
   filter.value = status
+  await loadManagerList()
 }
-const handlePageChange = (page: number) => {
-  console.log(page)
+const handlePageChange = async (page: number) => {
   pagination.page = page
+  await loadManagerList()
 }
-
 onMounted(async () => {
   await loadManagerList()
 })
@@ -117,6 +111,18 @@ onMounted(async () => {
         />
       </div>
       <Button :disabled="disabledSearch" @click="handleSearch"> ค้นหา </Button>
+      <Button
+        variant="outline"
+        @click="
+          () => {
+            search = undefined
+            loadManagerList()
+          }
+        "
+        :disabled="disabledSearch"
+      >
+        ล้าง
+      </Button>
     </div>
     <div class="ml-auto flex items-center gap-2">
       <DropdownMenu>
@@ -127,13 +133,15 @@ onMounted(async () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>สถานะ</DropdownMenuLabel>
+          <DropdownMenuLabel>ยืนยันตัวตน</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <template v-for="item in fileters" :key="item.status">
-            <DropdownMenuItem :checked="item.status === filter" @click="handleFilter(item.status)">
-              {{ item.label }}
-            </DropdownMenuItem>
-          </template>
+          <DropdownMenuRadioGroup v-model="filter">
+            <template v-for="item in fileters" :key="item.verify">
+              <DropdownMenuRadioItem :value="item.verify">
+                {{ item.label }}
+              </DropdownMenuRadioItem>
+            </template>
+          </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <Button size="sm" variant="outline" class="h-7 gap-1" disabled>
@@ -148,66 +156,34 @@ onMounted(async () => {
       </router-link> -->
     </div>
   </div>
-  <Card>
-    <CardHeader>
-      <CardTitle>รายการลูกค้า</CardTitle>
-      <CardDescription> จัดการผลิตภัณฑ์ของคุณและดูประสิทธิภาพการขาย </CardDescription>
-    </CardHeader>
-    <CardContent>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <template v-for="column in colums" :key="column.key">
-              <TableHead :class="column.class" class="font-medium">
-                <span :class="{ 'sr-only': column.hidden }"> {{ column.label }} </span>
-              </TableHead>
-            </template>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="customer in customers" :key="customer.id">
-            <TableCell class="font-medium">
-              {{ customer.id }}
-            </TableCell>
-            <TableCell>
-              {{ customer.email }}
-            </TableCell>
-            <TableCell>
-              {{ customer.username }}
-            </TableCell>
-            <TableCell>
-              <Badge variant="outline">
-                {{ customer.verified ? 'ยืนยันแล้ว' : 'ยังไม่ได้ยืนยัน' }}
-              </Badge>
-            </TableCell>
-            <TableCell class="hidden md:table-cell">
-              {{ customer.createdAt }}
-            </TableCell>
-            <TableCell>
-              <DropdownMenu>
-                <DropdownMenuTrigger as-child>
-                  <Button aria-haspopup="true" size="icon" variant="ghost">
-                    <MoreHorizontal class="h-4 w-4" />
-                    <span class="sr-only">เปิดเมนู</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
-                  <!-- <DropdownMenuItem as-child class="cursor-pointer">
+  <CTable
+    title="รายชื่อลูกค้า"
+    :columns="columns"
+    :items="customers"
+    :pagination="pagination"
+    @update:page="handlePageChange"
+  >
+    <template #verified="{ item }">
+      {{ item.verified ? 'ยืนยันแล้ว' : 'ยังไม่ยืนยัน' }}
+    </template>
+    <template #actions>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button aria-haspopup="true" size="icon" variant="ghost">
+            <MoreHorizontal class="h-4 w-4" />
+            <span class="sr-only">เปิดเมนู</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
+          <!-- <DropdownMenuItem as-child class="cursor-pointer">
                     <router-link :to="{ name: 'customer-edit', params: { id: customer.id } }">
                       แก้ไข
                     </router-link>
                   </DropdownMenuItem> -->
-                  <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </CardContent>
-  </Card>
-  <div class="flex justify-end items-center">
-    <CPagination :pagination="pagination" @update:page="handlePageChange" />
-  </div>
+          <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </template>
+  </CTable>
 </template>

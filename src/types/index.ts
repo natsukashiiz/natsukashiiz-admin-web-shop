@@ -18,6 +18,6 @@ export interface TableColumn {
 
 export interface Pagination {
   page: number
-  limit: number
+  size: number
   total: number
 }

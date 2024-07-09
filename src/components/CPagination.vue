@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type PropType } from 'vue'
 import {
   Pagination,
   PaginationEllipsis,
@@ -11,14 +11,14 @@ import {
   PaginationPrev
 } from '@/components/ui/pagination'
 import { Button } from '@/components/ui/button'
+import type { Pagination as PaginationProps } from '@/types'
 
-const props = defineProps<{
+const props = defineProps({
   pagination: {
-    page: number
-    size: number
-    total: number
+    type: Object as PropType<PaginationProps>,
+    required: true
   }
-}>()
+})
 const emit = defineEmits(['update:page'])
 
 const currentPage = computed(() => props.pagination.page)
