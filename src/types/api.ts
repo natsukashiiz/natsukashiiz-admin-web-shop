@@ -45,6 +45,11 @@ export interface ManagerResponse {
   role: AdminRoles
 }
 
+export interface QueryManagerRequest extends Pagination {
+  username?: string
+  role?: AdminRoles
+}
+
 export interface CustomerResponse {
   id: number
   createdAt: Date
@@ -55,6 +60,13 @@ export interface CustomerResponse {
   verified: boolean
   deleted: boolean
   deletedAt: string | null
+}
+
+export interface QueryCustomerRequest extends Pagination {
+  email?: string
+  username?: string
+  verified?: boolean
+  deleted?: boolean
 }
 export interface ProductResponse {
   id: number
@@ -71,6 +83,11 @@ export interface ProductResponse {
   reviews: number
 }
 
+export interface QueryProductRequest extends Pagination {
+  name?: string
+  categoryId?: number
+}
+
 export interface CategoryResponse {
   id: number
   createdAt: Date
@@ -78,6 +95,10 @@ export interface CategoryResponse {
   name: string
   thumbnail: string
   sort: number
+}
+
+export interface QueryCategoryRequest extends Pagination {
+  name?: string
 }
 
 export interface ImageResponse {
@@ -99,6 +120,8 @@ export interface ProductOptionResponse {
   image: ImageResponse
 }
 
+export interface QueryProductOptionRequest extends Pagination {}
+
 export interface CarouselResponse {
   id: number
   createdAt: Date
@@ -106,6 +129,10 @@ export interface CarouselResponse {
   title: string
   imageUrl: string
   sort: number
+}
+
+export interface QueryCarouselRequest extends Pagination {
+  title?: string
 }
 
 export interface VoucherResponse {
@@ -124,4 +151,10 @@ export interface VoucherResponse {
   expiredAt: Date
   status: string
   thumbnail: string
+}
+
+export interface QueryVoucherRequest extends Pagination {
+  code?: string
+  discountType?: DiscountType
+  status?: string
 }

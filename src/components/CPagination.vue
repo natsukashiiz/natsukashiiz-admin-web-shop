@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button'
 const props = defineProps<{
   pagination: {
     page: number
-    limit: number
+    size: number
     total: number
   }
 }>()
@@ -23,11 +23,11 @@ const emit = defineEmits(['update:page'])
 
 const currentPage = computed(() => props.pagination.page)
 const totalItems = computed(() => props.pagination.total)
-const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.limit))
+const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.size))
 
-const startItem = computed(() => (currentPage.value - 1) * props.pagination.limit + 1)
+const startItem = computed(() => (currentPage.value - 1) * props.pagination.size + 1)
 const endItem = computed(() =>
-  Math.min(currentPage.value * props.pagination.limit, totalItems.value)
+  Math.min(currentPage.value * props.pagination.size, totalItems.value)
 )
 
 function handlePageChange(page: number) {
@@ -48,7 +48,7 @@ function handlePageChange(page: number) {
       :sibling-count="1"
       show-edges
       :default-page="pagination.page"
-      :items-per-page="pagination.limit"
+      :items-per-page="pagination.size"
       @update:page="handlePageChange"
     >
       <PaginationList v-slot="{ items }" class="flex items-center gap-1">

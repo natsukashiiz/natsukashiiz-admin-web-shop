@@ -8,3 +8,16 @@ export interface MenuItem {
   icon: FunctionalComponent<LucideProps, {}, any, {}>
   children?: MenuItem[]
 }
+
+export interface TableColumn {
+  key: string
+  label: string
+  hidden?: boolean
+  class?: string
+}
+
+export interface Pagination {
+  page: number
+  limit: number
+  total: number
+}

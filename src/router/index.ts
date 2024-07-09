@@ -1,4 +1,3 @@
-import { useAuthStore } from '@/stores/auth'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -7,27 +6,11 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/LoginView.vue'),
-      beforeEnter: (_to, _from, next) => {
-        const authStore = useAuthStore()
-        authStore.loadAuth()
-        if (authStore.isAuthenticated) {
-          next({ name: 'dashboard' })
-        }
-        next()
-      }
+      component: () => import('@/views/LoginView.vue')
     },
     {
       path: '/',
       name: 'dashboard',
-      beforeEnter: (_to, _from, next) => {
-        const authStore = useAuthStore()
-        authStore.loadAuth()
-        if (!authStore.isAuthenticated) {
-          next({ name: 'login' })
-        }
-        next()
-      },
       component: () => import('@/layouts/DashboardLayout.vue'),
       redirect: '/home',
       children: [

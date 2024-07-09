@@ -17,6 +17,8 @@ import {
   List
 } from 'lucide-vue-next'
 import { useSettingStore } from '@/stores/settingStore'
+import { useAuthStore } from '@/stores/auth'
+import { onBeforeMount } from 'vue'
 
 const menus: MenuItem[] = [
   {
@@ -143,6 +145,11 @@ const menus: MenuItem[] = [
 
 const settingStore = useSettingStore()
 settingStore.loadSetting()
+
+onBeforeMount(async () => {
+  const { loadAuth } = useAuthStore()
+  await loadAuth()
+})
 </script>
 <template>
   <div

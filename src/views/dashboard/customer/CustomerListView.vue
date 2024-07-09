@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { File, ListFilter, MoreHorizontal, PlusCircle, Search } from 'lucide-vue-next'
+import { File, ListFilter, MoreHorizontal, Search } from 'lucide-vue-next'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,19 +19,14 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-
 import { Input } from '@/components/ui/input'
 import { reactive, ref } from 'vue'
 import { computed } from 'vue'
 import CPagination from '@/components/CPagination.vue'
-import type { RouterLink } from 'vue-router'
-
-interface TableColumn {
-  key: string
-  label: string
-  hidden?: boolean
-  class?: string
-}
+import { queryCustomerList } from '@/api/customer'
+import type { CustomerResponse } from '@/types/api'
+import type { TableColumn } from '@/types'
+import { onMounted } from 'vue'
 
 const colums: TableColumn[] = [
   {
@@ -43,12 +38,12 @@ const colums: TableColumn[] = [
     label: 'อีเมล'
   },
   {
-    key: 'nick',
+    key: 'username',
     label: 'ชื่อผู้ใช้'
   },
   {
-    key: 'status',
-    label: 'สถานะ'
+    key: 'verified',
+    label: 'ยืนยันตัวตน'
   },
   {
     key: 'createdAt',
@@ -62,50 +57,6 @@ const colums: TableColumn[] = [
   }
 ]
 
-const customers = [
-  {
-    id: 1,
-    email: 'cutomer1@email.com',
-    nick: 'customer1',
-    status: 'active',
-    createdAt: '2021-09-01'
-  },
-  {
-    id: 2,
-    email: 'customer2@email.com',
-    nick: 'customer2',
-    status: 'active',
-    createdAt: '2021-10-01'
-  },
-  {
-    id: 3,
-    email: 'customer3@email.com',
-    nick: 'customer3',
-    status: 'active',
-    createdAt: '2021-11-01'
-  },
-  {
-    id: 4,
-    email: 'customer4@email.com',
-    nick: 'customer4',
-    status: 'active',
-    createdAt: '2021-12-01'
-  },
-  {
-    id: 5,
-    email: 'customer5@email.com',
-    nick: 'customer5',
-    status: 'active',
-    createdAt: '2022-01-01'
-  },
-  {
-    id: 6,
-    email: 'customer6@email.com',
-    nick: 'customer6',
-    status: 'active',
-    createdAt: '2022-02-01'
-  }
-]
 const search = ref('')
 const filter = ref('')
 const fileters = [
@@ -113,12 +64,28 @@ const fileters = [
   { status: 'inactive', label: 'ปิดใช้งาน' },
   { status: 'deleted', label: 'ลบ' }
 ]
-
+const customers = ref<CustomerResponse[]>([])
 const pagination = reactive({
   page: 1,
-  limit: 6,
-  total: 100
+  size: 6,
+  total: 0
 })
+
+const loadManagerList = async () => {
+  try {
+    const res = await queryCustomerList({
+      page: pagination.page,
+      size: pagination.size
+    })
+    if (res.status === 200 && res.data) {
+      customers.value = res.data.list
+      pagination.total = res.data.total
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const disabledSearch = computed(() => search.value.length < 1)
 const handleSearch = () => {
   console.log(search.value)
@@ -131,6 +98,10 @@ const handlePageChange = (page: number) => {
   console.log(page)
   pagination.page = page
 }
+
+onMounted(async () => {
+  await loadManagerList()
+})
 </script>
 
 <template>
@@ -202,11 +173,11 @@ const handlePageChange = (page: number) => {
               {{ customer.email }}
             </TableCell>
             <TableCell>
-              {{ customer.nick }}
+              {{ customer.username }}
             </TableCell>
             <TableCell>
               <Badge variant="outline">
-                {{ customer.status }}
+                {{ customer.verified ? 'ยืนยันแล้ว' : 'ยังไม่ได้ยืนยัน' }}
               </Badge>
             </TableCell>
             <TableCell class="hidden md:table-cell">
