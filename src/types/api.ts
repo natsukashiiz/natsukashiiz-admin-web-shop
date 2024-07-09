@@ -63,6 +63,7 @@ export interface CustomerResponse {
 }
 
 export interface QueryCustomerRequest extends Pagination {
+  id?: number
   email?: string
   username?: string
   verified?: boolean

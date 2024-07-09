@@ -47,7 +47,8 @@ function handlePageChange(page: number) {
       :total="pagination.total"
       :sibling-count="1"
       show-edges
-      :default-page="pagination.page"
+      :default-page="1"
+      :page="pagination.page"
       :items-per-page="pagination.size"
       @update:page="handlePageChange"
     >

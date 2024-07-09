@@ -1,5 +1,5 @@
 import type { LucideProps } from 'lucide-vue-next'
-import type { FunctionalComponent } from 'vue'
+import type { FunctionalComponent, InputTypeHTMLAttribute } from 'vue'
 
 export interface MenuItem {
   title: string
@@ -20,4 +20,15 @@ export interface Pagination {
   page: number
   size: number
   total: number
+}
+
+export interface TableSearchBy {
+  key: string
+  label: string
+  type: InputTypeHTMLAttribute
+}
+
+export interface TableSearch {
+  query?: string
+  by: TableSearchBy
 }
