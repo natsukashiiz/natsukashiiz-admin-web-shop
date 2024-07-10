@@ -135,6 +135,7 @@ export interface CarouselResponse {
 }
 
 export interface QueryCarouselRequest extends Pagination {
+  id?: number
   title?: string
 }
 
