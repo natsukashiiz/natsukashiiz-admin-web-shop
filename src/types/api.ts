@@ -46,6 +46,7 @@ export interface ManagerResponse {
 }
 
 export interface QueryManagerRequest extends Pagination {
+  id?: number
   username?: string
   role?: AdminRoles
 }
