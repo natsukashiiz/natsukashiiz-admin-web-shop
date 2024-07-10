@@ -14,8 +14,8 @@ import { queryCategoryList } from '@/api/category'
 import type { CategoryResponse } from '@/types/api'
 import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
 import { onMounted } from 'vue'
-import { CheckCircledIcon, CrossCircledIcon } from '@radix-icons/vue'
 import { watch } from 'vue'
+import { PostStatus } from '@/types/enum'
 
 const columns: TableColumn[] = [
   {
@@ -36,6 +36,11 @@ const columns: TableColumn[] = [
     class: 'hidden md:table-cell'
   },
   {
+    key: 'status',
+    label: 'สถานะ',
+    class: 'hidden md:table-cell'
+  },
+  {
     key: 'createdAt',
     label: 'วันที่ลงทะเบียน',
     class: 'hidden md:table-cell'
@@ -47,13 +52,32 @@ const columns: TableColumn[] = [
   }
 ]
 const searchBy: TableSearchBy[] = [
-  { key: 'id', label: 'ID', type: 'number' },
-  { key: 'name', label: 'ชื่อ', type: 'search' }
+  {
+    key: 'id',
+    label: 'ID',
+    type: 'number'
+  },
+  {
+    key: 'name',
+    label: 'ชื่อ',
+    type: 'search'
+  },
+  {
+    key: 'status',
+    label: 'สถานะ',
+    type: 'select',
+    options: [
+      { label: 'ทั้งหมด', value: 'none' },
+      { label: 'ฉบับร่าง', value: PostStatus.draft },
+      { label: 'เผยแพร่', value: PostStatus.published },
+      { label: 'จัดเก็บ', value: PostStatus.archived }
+    ]
+  }
 ]
 
 const search = reactive<TableSearch>({
-  query: undefined,
-  by: searchBy[1]
+  query: PostStatus.published,
+  by: searchBy[2]
 })
 const categorys = ref<CategoryResponse[]>([])
 const pagination = reactive<Pagination>({
@@ -68,7 +92,11 @@ const loadCategoryList = async () => {
       page: pagination.page,
       size: pagination.size,
       id: search.by.key === 'id' && search.query ? Number(search.query) : undefined,
-      name: search.by.key === 'name' && search.query ? search.query : undefined
+      name: search.by.key === 'name' && search.query ? search.query.trim() : undefined,
+      status:
+        search.by.key === 'status' && search.query
+          ? PostStatus[search.query as keyof typeof PostStatus]
+          : undefined
     })
     if (res.status === 200 && res.data) {
       categorys.value = res.data.list
@@ -114,6 +142,26 @@ onMounted(async () => {
         height="64"
         width="64"
       />
+    </template>
+    <template #status="{ item }">
+      <span
+        v-if="item.status === PostStatus.draft"
+        class="px-1.5 rounded-md bg-gray-500 text-white"
+      >
+        ฉบับร่าง
+      </span>
+      <span
+        v-else-if="item.status === PostStatus.published"
+        class="px-1.5 rounded-md bg-emerald-200 text-black"
+      >
+        เผยแพร่
+      </span>
+      <span
+        v-else-if="item.status === PostStatus.archived"
+        class="px-1.5 rounded-md bg-red-400 text-white"
+      >
+        จัดเก็บ
+      </span>
     </template>
     <template #actions>
       <DropdownMenu>

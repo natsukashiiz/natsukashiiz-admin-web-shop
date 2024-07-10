@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios'
-import type { AdminRoles, DiscountType } from './enum'
+import type { AdminRoles, DiscountType, PostStatus } from './enum'
 
 export type ApiResponse<T> = Promise<AxiosResponse<T>>
 
@@ -35,6 +35,12 @@ export interface LoginRequest {
 
 export interface RefreshTokenRequest {
   refreshToken: string
+}
+
+export interface FileStoreResponse {
+  name: string
+  type: string
+  url: string
 }
 
 export interface ManagerResponse {
@@ -98,11 +104,20 @@ export interface CategoryResponse {
   name: string
   thumbnail: string
   sort: number
+  status: PostStatus
 }
 
 export interface QueryCategoryRequest extends Pagination {
   id?: number
   name?: string
+  status?: PostStatus
+}
+
+export interface CreateCategoryRequest {
+  name: string
+  thumbnail: string
+  sort: number
+  status: PostStatus
 }
 
 export interface ImageResponse {

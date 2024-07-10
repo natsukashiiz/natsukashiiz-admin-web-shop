@@ -1,5 +1,11 @@
 import client from './request'
-import type { ApiResponse, PageResponse, CategoryResponse, QueryCategoryRequest } from '@/types/api'
+import type {
+  ApiResponse,
+  PageResponse,
+  CategoryResponse,
+  QueryCategoryRequest,
+  CreateCategoryRequest
+} from '@/types/api'
 
 const queryCategoryList = (
   params: QueryCategoryRequest
@@ -7,4 +13,7 @@ const queryCategoryList = (
 
 const queryCategoryNames = (): ApiResponse<CategoryResponse[]> => client.get('/v1/categories/names')
 
-export { queryCategoryList, queryCategoryNames }
+const createCategory = (data: CreateCategoryRequest): ApiResponse<CategoryResponse> =>
+  client.post('/v1/categories', data)
+
+export { queryCategoryList, queryCategoryNames, createCategory }

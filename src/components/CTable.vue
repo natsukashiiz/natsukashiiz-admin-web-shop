@@ -96,6 +96,7 @@ defineEmits(['update:page', 'update:searchQuery', 'update:searchBy'])
         <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Select
           v-if="search.by.type === 'select'"
+          :model-value="search.query"
           @update:model-value="(query) => $emit('update:searchQuery', query)"
         >
           <SelectTrigger class="w-[200px] appearance-none bg-background pl-8 shadow-none">

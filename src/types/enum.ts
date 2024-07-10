@@ -1,28 +1,34 @@
 export enum OrderStatus {
-  PENDING = 'PENDING',
-  PAID = 'PAID',
-  SUCCESSFUL = 'SUCCESSFUL',
-  FAILED = 'FAILED',
-  SELF_CANCELED = 'SELF_CANCELED',
-  SYSTEM_CANCELED = 'SYSTEM_CANCELED'
+  pending,
+  paid,
+  successful,
+  failed,
+  self_canceled,
+  system_canceled
 }
 
 export enum DiscountType {
-  PERCENT = 'PERCENT',
-  AMOUNT = 'AMOUNT'
+  percent,
+  amount
 }
 
 export enum SocialProviders {
-  FACEBOOK = 'FACEBOOK',
-  GOOGLE = 'GOOGLE'
+  facebook,
+  google
 }
 
 export enum AdminRoles {
-  ADMIN = 'ADMIN',
-  SUPER_ADMIN = 'SUPER_ADMIN'
+  admin,
+  super_admin
 }
 
 export enum VoucherStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE'
+  active,
+  inactive
+}
+
+export enum PostStatus {
+  draft = 'draft',
+  published = 'published',
+  archived = 'archived'
 }

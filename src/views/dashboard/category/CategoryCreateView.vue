@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { Upload, X } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -11,41 +17,77 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { ref } from 'vue'
-import { reactive } from 'vue'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useToast } from '@/components/ui/toast/use-toast'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
+import { vAutoAnimate } from '@formkit/auto-animate/vue'
+import { ref } from 'vue'
+import type { CreateCategoryRequest } from '@/types/api'
+import { PostStatus } from '@/types/enum'
+import { createCategory } from '@/api/category'
+import { uploadFile } from '@/api/file'
 
-interface FormAddCategory {
-  name: string
-  image: string | null
-  status: string | null
-}
+const { toast } = useToast()
 
-const status = ref([
-  { key: 'DRAFT', value: 'ฉบับร่าง' },
-  { key: 'PUBLISHED', value: 'เผยแพร่' },
-  { key: 'ARCHIVED', value: 'จัดเก็บ' }
-])
-const formAddCategory = reactive<FormAddCategory>({
-  name: '',
-  image: null,
-  status: null
-})
-const images = ref<{ url: string }[]>([])
+const image = ref<string>()
+const file = ref<File | null>(null)
 
-const handleCancel = () => {
-  console.log('Cancel')
-  if (confirm('Are you sure you want to cancel?')) {
-    formAddCategory.name = ''
-    formAddCategory.status = null
+const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors } = useForm<
+  Partial<CreateCategoryRequest>
+>({
+  validationSchema: toTypedSchema(
+    z.object({
+      name: z.string({ message: 'กรุณากรอกชื่อหมวดหมู่' }),
+      sort: z.number({ message: 'กรุณากรอกลำดับหมวดหมู่' }),
+      thumbnail: z.string({ message: 'กรุณาอัปโหลดรูปภาพ' }),
+      status: z.nativeEnum(PostStatus)
+    })
+  ),
+  initialValues: {
+    sort: 0,
+    status: PostStatus.draft
   }
-}
-const handleSave = () => {
-  console.log('Save')
-  console.log(formAddCategory)
-}
-const handleAchieve = () => {
-  console.log('Achieve')
+})
+const onSubmit = handleSubmit(async (form) => {
+  if (file.value) {
+    const url = await handleUploadFile()
+    if (url) {
+      form.thumbnail = url
+    } else {
+      setErrors({ thumbnail: 'ไม่สามารถอัปโหลดรูปภาพได้' })
+      return
+    }
+  }
+  try {
+    const res = await createCategory({
+      name: form.name!,
+      sort: form.sort!,
+      thumbnail: form.thumbnail!,
+      status: form.status!
+    })
+    if (res.status === 200) {
+      toast({
+        description: 'สร้างหมวดหมู่สำเร็จ',
+        duration: 3000
+      })
+      clearForm()
+    }
+  } catch (error: any) {
+    if (error.response.status === 417) {
+      const err = error.response.data.error
+      if (err === 'category.exists.name') {
+        setErrors({ name: 'ชื่อหมวดหมู่นี้มีอยู่แล้ว' })
+      }
+    }
+  }
+})
+const clearForm = () => {
+  image.value = undefined
+  resetForm()
 }
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const handleFileInput = () => {
@@ -54,147 +96,221 @@ const handleFileInput = () => {
   }
 }
 const handleFileChange = async (event: Event) => {
+  console.log(event)
   const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (file) {
-    const url = URL.createObjectURL(file)
-    images.value.push({ url })
+  const f = target.files?.[0]
+  if (f) {
+    const url = URL.createObjectURL(f)
+    file.value = f
+    image.value = url
+    setFieldValue('thumbnail', url)
   }
+}
+const handleUploadFile = async () => {
+  try {
+    const formData = new FormData()
+    formData.append('file', file.value as File)
+    const res = await uploadFile(formData)
+    if (res.status === 200) {
+      file.value = null
+      return res.data.url
+    }
+  } catch (error) {
+    console.error(error)
+  }
+
+  return null
+}
+const removeImage = () => {
+  image.value = undefined
+  file.value = null
+  setFieldValue('thumbnail', undefined)
 }
 </script>
 
 <template>
-  <div class="mx-auto grid max-w-5xl flex-1 auto-rows-max gap-4">
-    <div class="flex items-center gap-4">
-      <div class="hidden items-center gap-2 md:ml-auto md:flex">
-        <Button variant="outline" size="sm" @click="handleCancel"> ยกเลิก </Button>
-        <Button size="sm" @click="handleSave"> บันทึก </Button>
-      </div>
-    </div>
-    <div class="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-      <div class="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>รายละเอียดหมวดหมู่</CardTitle>
-            <CardDescription>
-              รายละเอียดหมวดหมู่จะช่วยให้ลูกค้าเข้าใจหมวดหมู่ของคุณมากขึ้น
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div class="grid gap-6">
-              <div class="grid gap-3">
-                <Label for="name">ชื่อ</Label>
-                <Input type="text" class="w-full" v-model="formAddCategory.name" />
+  <form @submit="onSubmit">
+    <div class="mx-auto grid max-w-5xl flex-1 auto-rows-max gap-4">
+      <div class="flex items-center gap-4">
+        <div class="hidden items-center gap-2 md:ml-auto md:flex">
+          <Popover>
+            <PopoverTrigger>
+              <Button variant="outline" size="sm"> ยกเลิก </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div class="flex">
+                <p class="text-sm">คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการสร้างหมวดหมู่นี้</p>
+                <Button variant="outline" size="sm" @click="clearForm"> ยืนยัน </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>สถานะหมวดหมู่</CardTitle>
-            <CardDescription>
-              หมวดหมู่ที่เป็นฉบับร่างและจัดเก็บจะไม่แสดงในหน้าร้านของคุณ
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div class="grid gap-6">
-              <div class="grid gap-3">
-                <Label for="status">สถานะ</Label>
-                <Select v-model="formAddCategory.status">
-                  <SelectTrigger aria-label="เลือกสถานะ">
-                    <SelectValue placeholder="เลือกสถานะ" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <template v-for="item in status" :key="item.key">
-                      <SelectItem :value="item.key">
-                        {{ item.value }}
-                      </SelectItem>
-                    </template>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </PopoverContent>
+          </Popover>
+          <Button size="sm" type="submit"> บันทึก </Button>
+        </div>
       </div>
-      <div class="grid auto-rows-max items-start gap-4 lg:gap-8">
-        <Card class="overflow-hidden">
-          <CardHeader>
-            <CardTitle>รูปหมวดหมู่</CardTitle>
-            <CardDescription>
-              รูปภาพหมวดหมู่จะช่วยให้ลูกค้าเห็นภาพรวมของหมวดหมู่ของคุณ
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div class="grid gap-2">
-              <div class="grid grid-cols-2 gap-2">
-                <template v-for="(image, index) in images" :key="index">
-                  <div class="flex flex-col items-center gap-2">
-                    <div class="relative w-[84] h-[84]">
-                      <img :src="image.url" class="aspect-square w-full rounded-md object-cover" />
-                      <div class="absolute top-1 right-1">
-                        <TooltipProvider :delay-duration="0">
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <button
-                                class="rounded-full text-muted-foreground"
-                                @click="images.splice(index, 1)"
-                              >
-                                <X class="h-4 w-4" />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <span>ลบรูปภาพ</span>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+      <div class="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+        <div class="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>รายละเอียดหมวดหมู่</CardTitle>
+              <CardDescription>
+                รายละเอียดหมวดหมู่จะช่วยให้ลูกค้าเข้าใจหมวดหมู่ของคุณมากขึ้น
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid gap-3">
+                  <FormField
+                    v-slot="{ componentField }"
+                    name="name"
+                    :validate-on-blur="!isFieldDirty"
+                  >
+                    <FormItem v-auto-animate>
+                      <FormLabel>ชื่อ</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="กรอกชื่อหมวดหมู่" v-bind="componentField" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
+                </div>
+                <div class="grid gap-3">
+                  <FormField
+                    v-slot="{ componentField }"
+                    name="sort"
+                    :validate-on-blur="!isFieldDirty"
+                  >
+                    <FormItem v-auto-animate>
+                      <FormLabel>ลำดับ</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="กรอกลำดับหมวดหมู่"
+                          v-bind="componentField"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>สถานะหมวดหมู่</CardTitle>
+              <CardDescription>
+                หมวดหมู่ที่เป็นฉบับร่างและจัดเก็บจะไม่แสดงในหน้าร้านของคุณ
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div class="grid gap-6">
+                <div class="grid gap-3">
+                  <FormField
+                    v-slot="{ componentField }"
+                    name="status"
+                    :validate-on-blur="!isFieldDirty"
+                  >
+                    <FormItem>
+                      <FormLabel>สถานะ</FormLabel>
+                      <FormControl>
+                        <Select v-bind="componentField">
+                          <SelectTrigger>
+                            <SelectValue placeholder="เลือกสถานะ" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <template v-for="status in Object.values(PostStatus)" :key="status">
+                              <SelectItem :value="status">
+                                {{ status }}
+                              </SelectItem>
+                            </template>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <div class="grid auto-rows-max items-start gap-4 lg:gap-8">
+          <Card class="overflow-hidden">
+            <CardHeader>
+              <CardTitle>รูปหมวดหมู่</CardTitle>
+              <CardDescription>
+                รูปภาพหมวดหมู่จะช่วยให้ลูกค้าเห็นภาพรวมของหมวดหมู่ของคุณ
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FormField name="thumbnail" :validate-on-blur="!isFieldDirty">
+                <FormItem v-auto-animate>
+                  <div class="w-full aspect-square mx-auto overflow-hidden relative">
+                    <div v-if="image" class="flex flex-col items-center gap-2">
+                      <div class="relative">
+                        <img :src="image" />
+                        <div class="absolute top-1 right-1">
+                          <TooltipProvider :delay-duration="0">
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <button
+                                  class="rounded-full text-muted-foreground"
+                                  @click="removeImage"
+                                >
+                                  <X class="h-6 w-6" />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <span>ลบรูปภาพ</span>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                       </div>
                     </div>
+                    <TooltipProvider v-else :delay-duration="0">
+                      <Tooltip>
+                        <TooltipTrigger
+                          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                        >
+                          <button @click="handleFileInput">
+                            <Upload class="h-5 w-5 md:h-6 md:w-6 text-muted-foreground" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <span>อัปโหลดรูปภาพ</span>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <input
+                      ref="fileInputRef"
+                      type="file"
+                      accept="image/*"
+                      @change="handleFileChange"
+                      style="display: none"
+                    />
                   </div>
-                </template>
-                <TooltipProvider v-if="images.length < 1" :delay-duration="0">
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        class="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
-                        @click="handleFileInput"
-                      >
-                        <Upload class="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <span>อัปโหลดรูปภาพ</span>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <input
-                  ref="fileInputRef"
-                  type="file"
-                  accept="image/*"
-                  @change="handleFileChange"
-                  style="display: none"
-                />
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </CardContent>
+            <CardFooter>
+              <div class="flex flex-col px-6">
+                <ul class="text-blue-500 text-sm font-semibold list-disc">
+                  <li>ขนาดที่แนะนำ 64x64 พิกเซล</li>
+                  <li>อัตราส่วน 1:1</li>
+                  <li>ขนาดไฟล์ไม่เกิน 1MB</li>
+                  <li>ไฟล์ที่รองรับ: <span class="font-normal">.jpg, .jpeg, .png</span></li>
+                </ul>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>เก็บหมวดหมู่ลงคลัง</CardTitle>
-            <CardDescription> หมวดหมู่ที่เก็บลงคลังจะไม่แสดงในหน้าร้านของคุณ </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div />
-            <Button size="sm" variant="secondary" @click="handleAchieve">
-              เก็บหมวดหมู่ลงคลัง
-            </Button>
-          </CardContent>
-        </Card>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+      <div class="flex items-center justify-center gap-2 md:hidden">
+        <Button variant="outline" size="sm" @click="clearForm"> ยกเลิก </Button>
+        <Button size="sm" type="submit"> บันทึก </Button>
       </div>
     </div>
-    <div class="flex items-center justify-center gap-2 md:hidden">
-      <Button variant="outline" size="sm" @click="handleCancel"> ยกเลิก </Button>
-      <Button size="sm" @click="handleSave"> บันทึก </Button>
-    </div>
-  </div>
+  </form>
 </template>
