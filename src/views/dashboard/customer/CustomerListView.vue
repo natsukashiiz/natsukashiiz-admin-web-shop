@@ -51,6 +51,7 @@ const searchBy: TableSearchBy[] = [
   { key: 'email', label: 'อีเมล', type: 'email' },
   { key: 'username', label: 'ชื่อผู้ใช้', type: 'search' }
 ]
+
 const search = reactive<TableSearch>({
   query: undefined,
   by: searchBy[1]
@@ -84,11 +85,12 @@ const handlePageChange = async (page: number) => {
   pagination.page = page
   await loadManagerList()
 }
+
 watch(search, async () => {
-  console.log(search.query)
   pagination.page = 1
   await loadManagerList()
 })
+
 onMounted(async () => {
   await loadManagerList()
 })
