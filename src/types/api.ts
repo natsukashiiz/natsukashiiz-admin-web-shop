@@ -100,6 +100,7 @@ export interface CategoryResponse {
 }
 
 export interface QueryCategoryRequest extends Pagination {
+  id?: number
   name?: string
 }
 
