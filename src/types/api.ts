@@ -86,8 +86,9 @@ export interface ProductResponse {
 }
 
 export interface QueryProductRequest extends Pagination {
+  id?: number
   name?: string
-  categoryId?: number
+  'category.id'?: number
 }
 
 export interface CategoryResponse {

@@ -3,8 +3,8 @@ import type { ApiResponse, PageResponse, CategoryResponse, QueryCategoryRequest 
 
 const queryCategoryList = (
   params: QueryCategoryRequest
-): ApiResponse<PageResponse<CategoryResponse>> => {
-  return client.get('/v1/categories', { params })
-}
+): ApiResponse<PageResponse<CategoryResponse>> => client.get('/v1/categories', { params })
 
-export { queryCategoryList }
+const queryCategoryNames = (): ApiResponse<CategoryResponse[]> => client.get('/v1/categories/names')
+
+export { queryCategoryList, queryCategoryNames }

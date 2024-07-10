@@ -25,7 +25,8 @@ export interface Pagination {
 export interface TableSearchBy {
   key: string
   label: string
-  type: InputTypeHTMLAttribute
+  type: InputTypeHTMLAttribute | 'select'
+  options?: { label: string; value: string }[]
 }
 
 export interface TableSearch {

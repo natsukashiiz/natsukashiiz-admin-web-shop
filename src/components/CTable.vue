@@ -23,6 +23,14 @@ import {
 import CPagination from '@/components/CPagination.vue'
 import Badge from '@/components/ui/badge/Badge.vue'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import type { PropType } from 'vue'
 import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
 
@@ -86,7 +94,27 @@ defineEmits(['update:page', 'update:searchQuery', 'update:searchBy'])
       </DropdownMenu>
       <div class="relative">
         <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Select
+          v-if="search.by.type === 'select'"
+          @update:model-value="(query) => $emit('update:searchQuery', query)"
+        >
+          <SelectTrigger class="w-[200px] appearance-none bg-background pl-8 shadow-none">
+            <SelectValue :placeholder="search.by.label" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem
+                v-for="item in searchBy.find((item) => item.key === search.by.key)?.options"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ item.label }}
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <Input
+          v-else
           :value="search.query"
           :type="search.by.type"
           @update:model-value="
