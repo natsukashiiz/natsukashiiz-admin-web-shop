@@ -157,6 +157,7 @@ export interface VoucherResponse {
 }
 
 export interface QueryVoucherRequest extends Pagination {
+  id?: number
   code?: string
   discountType?: DiscountType
   status?: string
