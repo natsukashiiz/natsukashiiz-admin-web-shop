@@ -169,7 +169,7 @@ export interface VoucherResponse {
   category: CategoryResponse | null
   beginAt: Date
   expiredAt: Date
-  status: string
+  status: VoucherStatus
   thumbnail: string
 }
 
@@ -178,4 +178,19 @@ export interface QueryVoucherRequest extends Pagination {
   code?: string
   discountType?: DiscountType
   status?: VoucherStatus
+}
+
+export interface CreateVoucherRequest {
+  code: string
+  discount: number
+  discountType: DiscountType
+  maxDiscount: number | null
+  minOrderPrice: number
+  quantity: number
+  product?: number
+  category?: number
+  beginAt: string | Date
+  expiredAt: string | Date
+  status: VoucherStatus
+  thumbnail: string
 }

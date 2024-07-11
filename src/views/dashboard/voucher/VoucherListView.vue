@@ -97,7 +97,12 @@ const searchBy: TableSearchBy[] = [
   {
     key: 'discountType',
     label: 'ประเภทส่วนลด',
-    type: 'text'
+    type: 'select',
+    options: [
+      { label: 'ทั้งหมด', value: 'none' },
+      { label: 'เปอร์เซ็นต์', value: DiscountType.percent },
+      { label: 'บาท', value: DiscountType.amount }
+    ]
   },
   {
     key: 'status',

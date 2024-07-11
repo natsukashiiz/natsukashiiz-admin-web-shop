@@ -8,8 +8,8 @@ export enum OrderStatus {
 }
 
 export enum DiscountType {
-  percent,
-  amount
+  percent = 'percent',
+  amount = 'amount'
 }
 
 export enum SocialProviders {
