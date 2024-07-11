@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -27,29 +28,56 @@ import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import { ref } from 'vue'
 import type { CreateCategoryRequest } from '@/types/api'
 import { PostStatus } from '@/types/enum'
-import { createCategory } from '@/api/category'
+import { updateCategory, queryCategory } from '@/api/category'
 import { uploadFile } from '@/api/file'
+import { validateFileSize, validateFileType } from '@/utils/validations'
+import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
+import router from '@/router'
 
 const { toast } = useToast()
+const route = useRoute()
 
+const categoryId = Number(route.params.id)
 const image = ref<string>()
 const file = ref<File | null>(null)
 
-const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors } =
-  useForm<CreateCategoryRequest>({
-    validationSchema: toTypedSchema(
-      z.object({
-        name: z.string({ message: 'กรุณากรอกชื่อหมวดหมู่' }),
-        sort: z.number({ message: 'กรุณากรอกลำดับหมวดหมู่' }),
-        thumbnail: z.string({ message: 'กรุณาอัปโหลดรูปภาพ' }),
-        status: z.nativeEnum(PostStatus, { message: 'กรุณาเลือกสถานะ' })
-      })
-    ),
-    initialValues: {
-      sort: 0,
-      status: PostStatus.draft
+const loadCategory = async () => {
+  try {
+    const res = await queryCategory(categoryId)
+    if (res.status === 200) {
+      const category = res.data
+      setFieldValue('name', category.name)
+      setFieldValue('sort', category.sort)
+      setFieldValue('thumbnail', category.thumbnail)
+      setFieldValue('status', category.status)
+      image.value = category.thumbnail
     }
-  })
+  } catch (error) {
+    console.error(error)
+    toast({
+      description: 'ไม่สามารถโหลดข้อมูลหมวดหมู่ได้',
+      duration: 3000,
+      variant: 'destructive'
+    })
+  }
+}
+const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors } = useForm<
+  Partial<CreateCategoryRequest>
+>({
+  validationSchema: toTypedSchema(
+    z.object({
+      name: z.string({ message: 'กรุณากรอกชื่อหมวดหมู่' }),
+      sort: z.number({ message: 'กรุณากรอกลำดับหมวดหมู่' }),
+      thumbnail: z.string({ message: 'กรุณาอัปโหลดรูปภาพ' }),
+      status: z.nativeEnum(PostStatus)
+    })
+  ),
+  initialValues: {
+    sort: 0,
+    status: PostStatus.draft
+  }
+})
 const onSubmit = handleSubmit(async (form) => {
   if (file.value) {
     const url = await handleUploadFile()
@@ -61,18 +89,17 @@ const onSubmit = handleSubmit(async (form) => {
     }
   }
   try {
-    const res = await createCategory({
-      name: form.name,
-      sort: form.sort,
-      thumbnail: form.thumbnail,
-      status: form.status
+    const res = await updateCategory(categoryId, {
+      name: form.name!,
+      sort: form.sort!,
+      thumbnail: form.thumbnail!,
+      status: form.status!
     })
     if (res.status === 200) {
       toast({
-        description: 'สร้างหมวดหมู่สำเร็จ',
+        description: 'แก้ไขหมวดหมู่สำเร็จ',
         duration: 3000
       })
-      clearForm()
     }
   } catch (error: any) {
     if (error.response.status === 417) {
@@ -86,15 +113,7 @@ const onSubmit = handleSubmit(async (form) => {
 const clearForm = () => {
   image.value = undefined
   resetForm()
-}
-const handleCancel = () => {
-  console.log('Cancel')
-  if (confirm('Are you sure you want to cancel?')) {
-    clearForm()
-  }
-}
-const handleAchieve = () => {
-  console.log('Achieve')
+  router.push({ name: 'category-list' })
 }
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const handleFileInput = () => {
@@ -106,6 +125,23 @@ const handleFileChange = async (event: Event) => {
   const target = event.target as HTMLInputElement
   const f = target.files?.[0]
   if (f) {
+    if (validateFileType(f) === false) {
+      toast({
+        description: 'รูปภาพที่รองรับ: .jpeg, .png, .webp',
+        duration: 3000,
+        variant: 'destructive'
+      })
+      return
+    }
+    if (validateFileSize(f) === false) {
+      toast({
+        description: 'ขนาดไฟล์รูปภาพไม่เกิน 1MB',
+        duration: 3000,
+        variant: 'destructive'
+      })
+      return
+    }
+
     const url = URL.createObjectURL(f)
     file.value = f
     image.value = url
@@ -127,6 +163,18 @@ const handleUploadFile = async () => {
 
   return null
 }
+const removeImage = () => {
+  image.value = undefined
+  file.value = null
+  setFieldValue('thumbnail', undefined)
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
+}
+
+onMounted(async () => {
+  await loadCategory()
+})
 </script>
 
 <template>
@@ -134,7 +182,17 @@ const handleUploadFile = async () => {
     <div class="mx-auto grid max-w-5xl flex-1 auto-rows-max gap-4">
       <div class="flex items-center gap-4">
         <div class="hidden items-center gap-2 md:ml-auto md:flex">
-          <Button variant="outline" size="sm" @click="handleCancel"> ยกเลิก </Button>
+          <Popover>
+            <PopoverTrigger>
+              <Button variant="outline" size="sm" type="button"> ยกเลิก </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div class="flex">
+                <p class="text-sm">คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการแก้ไขหมวดหมู่นี้</p>
+                <Button variant="outline" size="sm" @click="clearForm"> ยืนยัน </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
           <Button size="sm" type="submit"> บันทึก </Button>
         </div>
       </div>
@@ -246,7 +304,7 @@ const handleUploadFile = async () => {
                               <TooltipTrigger>
                                 <button
                                   class="rounded-full text-muted-foreground"
-                                  @click="image = undefined"
+                                  @click="removeImage"
                                 >
                                   <X class="h-6 w-6" />
                                 </button>
@@ -291,22 +349,10 @@ const handleUploadFile = async () => {
                   <li>ขนาดที่แนะนำ 64x64 พิกเซล</li>
                   <li>อัตราส่วน 1:1</li>
                   <li>ขนาดไฟล์ไม่เกิน 1MB</li>
-                  <li>ไฟล์ที่รองรับ: <span class="font-normal">.jpg, .jpeg, .png</span></li>
+                  <li>ไฟล์ที่รองรับ: <span class="font-normal">.jpeg, .png, .webp</span></li>
                 </ul>
               </div>
             </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>เก็บหมวดหมู่ลงคลัง</CardTitle>
-              <CardDescription> หมวดหมู่ที่เก็บลงคลังจะไม่แสดงในหน้าร้านของคุณ </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div />
-              <Button size="sm" variant="secondary" @click="handleAchieve">
-                เก็บหมวดหมู่ลงคลัง
-              </Button>
-            </CardContent>
           </Card>
         </div>
       </div>

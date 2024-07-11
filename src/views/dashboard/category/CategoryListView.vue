@@ -163,7 +163,7 @@ onMounted(async () => {
         จัดเก็บ
       </span>
     </template>
-    <template #actions>
+    <template #actions="{ item }">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -173,11 +173,11 @@ onMounted(async () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
-          <!-- <DropdownMenuItem as-child class="cursor-pointer">
-                    <router-link :to="{ name: 'category-edit', params: { id: category.id } }">
-                      แก้ไข
-                    </router-link>
-                  </DropdownMenuItem> -->
+          <DropdownMenuItem as-child class="cursor-pointer">
+            <router-link :to="{ name: 'category-edit', params: { id: item.id } }">
+              แก้ไข
+            </router-link>
+          </DropdownMenuItem>
           <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

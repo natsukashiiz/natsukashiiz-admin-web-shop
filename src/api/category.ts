@@ -13,7 +13,13 @@ const queryCategoryList = (
 
 const queryCategoryNames = (): ApiResponse<CategoryResponse[]> => client.get('/v1/categories/names')
 
+const queryCategory = (id: number): ApiResponse<CategoryResponse> =>
+  client.get(`/v1/categories/${id}`)
+
 const createCategory = (data: CreateCategoryRequest): ApiResponse<CategoryResponse> =>
   client.post('/v1/categories', data)
 
-export { queryCategoryList, queryCategoryNames, createCategory }
+const updateCategory = (id: number, data: CreateCategoryRequest): ApiResponse<CategoryResponse> =>
+  client.put(`/v1/categories/${id}`, data)
+
+export { queryCategoryList, queryCategoryNames, queryCategory, createCategory, updateCategory }
