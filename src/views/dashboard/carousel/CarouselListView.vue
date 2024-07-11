@@ -45,7 +45,18 @@ const columns: TableColumn[] = [
     hidden: true
   }
 ]
-const searchBy: TableSearchBy[] = [{ key: 'id', label: 'ID', type: 'number' }]
+const searchBy: TableSearchBy[] = [
+  {
+    key: 'id',
+    label: 'ID',
+    type: 'number'
+  },
+  {
+    key: 'title',
+    label: 'หัวข้อ',
+    type: 'text'
+  }
+]
 
 const search = reactive<TableSearch>({
   query: undefined,

@@ -277,7 +277,12 @@ const removeImage = () => {
                     <FormItem v-auto-animate>
                       <FormLabel>ส่วนลด</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="กรอกส่วนลด" v-bind="componentField" />
+                        <Input
+                          type="number"
+                          step="any"
+                          placeholder="กรอกส่วนลด"
+                          v-bind="componentField"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -294,6 +299,7 @@ const removeImage = () => {
                       <FormControl>
                         <Input
                           type="number"
+                          step="any"
                           placeholder="กรอกลดสูงสุด"
                           v-bind="componentField"
                           :disabled="values.discountType === DiscountType.amount"
@@ -312,7 +318,12 @@ const removeImage = () => {
                     <FormItem v-auto-animate>
                       <FormLabel>ยอดขั้นต่ำ</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="กรอกยอดขั้นต่ำ" v-bind="componentField" />
+                        <Input
+                          type="number"
+                          step="any"
+                          placeholder="กรอกยอดขั้นต่ำ"
+                          v-bind="componentField"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

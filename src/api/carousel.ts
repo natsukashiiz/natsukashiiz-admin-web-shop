@@ -1,5 +1,11 @@
 import client from './request'
-import type { ApiResponse, PageResponse, CarouselResponse, QueryCarouselRequest } from '@/types/api'
+import type {
+  ApiResponse,
+  PageResponse,
+  CarouselResponse,
+  QueryCarouselRequest,
+  CreateCarouselRequest
+} from '@/types/api'
 
 const queryCarouselList = (
   params: QueryCarouselRequest
@@ -7,4 +13,8 @@ const queryCarouselList = (
   return client.get('/v1/carousels', { params })
 }
 
-export { queryCarouselList }
+const createCarousel = (data: CreateCarouselRequest): ApiResponse<CarouselResponse> => {
+  return client.post('/v1/carousels', data)
+}
+
+export { queryCarouselList, createCarousel }

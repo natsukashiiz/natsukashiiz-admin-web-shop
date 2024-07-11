@@ -155,6 +155,12 @@ export interface QueryCarouselRequest extends Pagination {
   title?: string
 }
 
+export interface CreateCarouselRequest {
+  title: string
+  imageUrl: string
+  sort: number
+}
+
 export interface VoucherResponse {
   id: number
   createdAt: Date
