@@ -30,6 +30,7 @@ import type { CreateCategoryRequest } from '@/types/api'
 import { PostStatus } from '@/types/enum'
 import { createCategory } from '@/api/category'
 import { uploadFile } from '@/api/file'
+import { validateFileSize, validateFileType } from '@/utils/validations'
 
 const { toast } = useToast()
 
@@ -81,6 +82,12 @@ const onSubmit = handleSubmit(async (form) => {
       const err = error.response.data.error
       if (err === 'category.exists.name') {
         setErrors({ name: 'ชื่อหมวดหมู่นี้มีอยู่แล้ว' })
+      } else {
+        toast({
+          description: 'เกิดข้อผิดพลาดบางอย่าง',
+          duration: 3000,
+          variant: 'destructive'
+        })
       }
     }
   }
@@ -96,10 +103,26 @@ const handleFileInput = () => {
   }
 }
 const handleFileChange = async (event: Event) => {
-  console.log(event)
   const target = event.target as HTMLInputElement
   const f = target.files?.[0]
   if (f) {
+    if (validateFileType(f) === false) {
+      toast({
+        description: 'รูปภาพที่รองรับ: .jpeg, .png, .webp',
+        duration: 3000,
+        variant: 'destructive'
+      })
+      return
+    }
+    if (validateFileSize(f) === false) {
+      toast({
+        description: 'ขนาดไฟล์รูปภาพไม่เกิน 1MB',
+        duration: 3000,
+        variant: 'destructive'
+      })
+      return
+    }
+
     const url = URL.createObjectURL(f)
     file.value = f
     image.value = url
@@ -117,6 +140,11 @@ const handleUploadFile = async () => {
     }
   } catch (error) {
     console.error(error)
+    toast({
+      description: 'ไม่สามารถอัปโหลดรูปภาพได้',
+      duration: 3000,
+      variant: 'destructive'
+    })
   }
 
   return null
@@ -125,6 +153,9 @@ const removeImage = () => {
   image.value = undefined
   file.value = null
   setFieldValue('thumbnail', undefined)
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
 }
 </script>
 
@@ -300,7 +331,7 @@ const removeImage = () => {
                   <li>ขนาดที่แนะนำ 64x64 พิกเซล</li>
                   <li>อัตราส่วน 1:1</li>
                   <li>ขนาดไฟล์ไม่เกิน 1MB</li>
-                  <li>ไฟล์ที่รองรับ: <span class="font-normal">.jpg, .jpeg, .png</span></li>
+                  <li>ไฟล์ที่รองรับ: <span class="font-normal">.jpeg, .png, .webp</span></li>
                 </ul>
               </div>
             </CardFooter>
