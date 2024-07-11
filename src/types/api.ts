@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios'
-import type { AdminRoles, DiscountType, PostStatus } from './enum'
+import type { AdminRoles, DiscountType, PostStatus, VoucherStatus } from './enum'
 
 export type ApiResponse<T> = Promise<AxiosResponse<T>>
 
@@ -177,5 +177,5 @@ export interface QueryVoucherRequest extends Pagination {
   id?: number
   code?: string
   discountType?: DiscountType
-  status?: string
+  status?: VoucherStatus
 }

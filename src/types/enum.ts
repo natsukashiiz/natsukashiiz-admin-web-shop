@@ -23,8 +23,8 @@ export enum AdminRoles {
 }
 
 export enum VoucherStatus {
-  active,
-  inactive
+  active = 'active',
+  inactive = 'inactive'
 }
 
 export enum PostStatus {

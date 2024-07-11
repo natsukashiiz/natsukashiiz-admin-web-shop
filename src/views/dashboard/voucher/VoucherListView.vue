@@ -84,15 +84,36 @@ const columns: TableColumn[] = [
   }
 ]
 const searchBy: TableSearchBy[] = [
-  { key: 'id', label: 'ID', type: 'number' },
-  { key: 'code', label: 'รหัส', type: 'text' },
-  { key: 'discountType', label: 'ประเภทส่วนลด', type: 'text' },
-  { key: 'status', label: 'สถานะ', type: 'text' }
+  {
+    key: 'id',
+    label: 'ID',
+    type: 'number'
+  },
+  {
+    key: 'code',
+    label: 'รหัส',
+    type: 'text'
+  },
+  {
+    key: 'discountType',
+    label: 'ประเภทส่วนลด',
+    type: 'text'
+  },
+  {
+    key: 'status',
+    label: 'สถานะ',
+    type: 'select',
+    options: [
+      { label: 'ทั้งหมด', value: 'none' },
+      { label: 'ใช้งาน', value: VoucherStatus.active },
+      { label: 'ไม่ใช้งาน', value: VoucherStatus.inactive }
+    ]
+  }
 ]
 
 const search = reactive<TableSearch>({
-  query: undefined,
-  by: searchBy[1]
+  query: VoucherStatus.active,
+  by: searchBy[3]
 })
 const vouchers = ref<VoucherResponse[]>([])
 const pagination = reactive<Pagination>({
@@ -109,8 +130,13 @@ const loadVoucherList = async () => {
       id: search.by.key === 'id' && search.query ? Number(search.query) : undefined,
       code: search.by.key === 'code' && search.query ? String(search.query) : undefined,
       discountType:
-        search.by.key === 'discountType' && search.query ? DiscountType[search.query] : undefined,
-      status: search.by.key === 'status' && search.query ? String(search.query) : undefined
+        search.by.key === 'discountType' && search.query
+          ? DiscountType[search.query as keyof typeof DiscountType]
+          : undefined,
+      status:
+        search.by.key === 'status' && search.query
+          ? VoucherStatus[search.query as keyof typeof VoucherStatus]
+          : undefined
     })
     if (res.status === 200 && res.data) {
       vouchers.value = res.data.list
@@ -153,22 +179,25 @@ onMounted(async () => {
         :src="item.thumbnail"
         :alt="item.name"
         class="aspect-square rounded-md object-cover"
-        height="64"
-        width="64"
+        height="78"
+        width="78"
       />
     </template>
     <template #discountType="{ item }">
-      <Badge v-if="item.discountType === DiscountType.PERCENT" variant="secondary">
+      <Badge v-if="item.discountType === DiscountType.percent" variant="secondary">
         เปอร์เซ็นต์
       </Badge>
-      <Badge v-else-if="item.discountType === DiscountType.AMOUNT" variant="secondary">บาท</Badge>
+      <Badge v-else-if="item.discountType === DiscountType.amount" variant="secondary">บาท</Badge>
     </template>
     <template #status="{ item }">
       <CheckCircledIcon
-        v-if="item.status === VoucherStatus.ACTIVE"
+        v-if="item.status === VoucherStatus.active"
         class="h-5 w-5 text-green-500"
       />
-      <CrossCircledIcon v-else class="h-5 w-5 text-red-500" />
+      <CrossCircledIcon
+        v-else-if="item.status === VoucherStatus.inactive"
+        class="h-5 w-5 text-red-500"
+      />
     </template>
     <template #actions>
       <DropdownMenu>
