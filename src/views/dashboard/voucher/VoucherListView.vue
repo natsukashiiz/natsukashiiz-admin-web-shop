@@ -31,11 +31,11 @@ const columns: TableColumn[] = [
   },
   {
     key: 'code',
-    label: 'รหัส'
+    label: 'โค้ด'
   },
   {
     key: 'discountType',
-    label: 'ประเภทส่วนลด'
+    label: 'ประเภท'
   },
   {
     key: 'discount',
@@ -43,12 +43,12 @@ const columns: TableColumn[] = [
   },
   {
     key: 'minOrderPrice',
-    label: 'ราคาขั้นต่ำ',
+    label: 'ขั้นต่ำ',
     class: 'hidden md:table-cell'
   },
   {
     key: 'maxDiscount',
-    label: 'ส่วนลดสูงสุด',
+    label: 'ลดสูงสุด',
     class: 'hidden md:table-cell'
   },
   {
@@ -91,7 +91,7 @@ const searchBy: TableSearchBy[] = [
   },
   {
     key: 'code',
-    label: 'รหัส',
+    label: 'โค้ด',
     type: 'text'
   },
   {
@@ -204,7 +204,7 @@ onMounted(async () => {
         class="h-5 w-5 text-red-500"
       />
     </template>
-    <template #actions>
+    <template #actions="{ item }">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -214,11 +214,11 @@ onMounted(async () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
-          <!-- <DropdownMenuItem as-child class="cursor-pointer">
-                    <router-link :to="{ name: 'voucher-edit', params: { id: voucher.id } }">
-                      แก้ไข
-                    </router-link>
-                  </DropdownMenuItem> -->
+          <DropdownMenuItem as-child class="cursor-pointer">
+            <router-link :to="{ name: 'voucher-edit', params: { id: item.id } }">
+              แก้ไข
+            </router-link>
+          </DropdownMenuItem>
           <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
