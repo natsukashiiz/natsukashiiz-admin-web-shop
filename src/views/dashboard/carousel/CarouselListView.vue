@@ -147,7 +147,7 @@ onMounted(async () => {
     <template #status="{ item }">
       <CCommonStatus :status="item.status" />
     </template>
-    <template #actions>
+    <template #actions="{ item }">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -157,11 +157,11 @@ onMounted(async () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>การกระทำ</DropdownMenuLabel>
-          <!-- <DropdownMenuItem as-child class="cursor-pointer">
-                    <router-link :to="{ name: 'carousel-edit', params: { id: carousel.id } }">
-                      แก้ไข
-                    </router-link>
-                  </DropdownMenuItem> -->
+          <DropdownMenuItem as-child class="cursor-pointer">
+            <router-link :to="{ name: 'carousel-edit', params: { id: item.id } }">
+              แก้ไข
+            </router-link>
+          </DropdownMenuItem>
           <DropdownMenuItem disabled>ลบ</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

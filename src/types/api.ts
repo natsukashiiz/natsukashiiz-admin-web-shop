@@ -168,6 +168,13 @@ export interface CreateCarouselRequest {
   status: CommonStatus
 }
 
+export interface UpdateCarouselRequest {
+  title: string
+  imageUrl: string
+  sort: number
+  status: CommonStatus
+}
+
 export interface VoucherResponse {
   id: number
   createdAt: Date

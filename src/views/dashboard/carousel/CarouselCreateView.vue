@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { Upload, X } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -35,26 +41,32 @@ const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors } = useF
     z.object({
       title: z.string({ message: 'กรุณากรอกชื่อ' }),
       imageUrl: z.string({ message: 'กรุณาอัปโหลดรูปภาพ' }),
-      sort: z.number().int({ message: 'ลำดับต้องเป็นตัวเลขเท่านั้น' })
+      sort: z.number().int({ message: 'ลำดับต้องเป็นตัวเลขเท่านั้น' }),
+      status: z.nativeEnum(CommonStatus, { message: 'กรุณาเลือกสถานะ' })
     })
   ),
   initialValues: {
     sort: 0,
-    status: CommonStatus.draft
+    status: CommonStatus.active
   }
 })
-const onSubmit = handleSubmit(async (form: CreateCarouselRequest) => {
+const onSubmit = handleSubmit(async (form: Partial<CreateCarouselRequest>) => {
   if (file.value) {
     const url = await handleUploadFile()
     if (url) {
       form.imageUrl = url
     } else {
-      setErrors({ thumbnail: 'ไม่สามารถอัปโหลดรูปภาพได้' })
+      setErrors({ imageUrl: 'ไม่สามารถอัปโหลดรูปภาพได้' })
       return
     }
   }
   try {
-    const res = await createCarousel(form)
+    const res = await createCarousel({
+      title: form.title!,
+      imageUrl: form.imageUrl!,
+      sort: form.sort!,
+      status: form.status!
+    })
     if (res.status === 200) {
       toast({
         description: 'สร้างภาพสไลด์สำเร็จ',
@@ -199,7 +211,7 @@ const removeImage = () => {
                   <div class="aspect-[16/9] overflow-hidden relative">
                     <div v-if="image" class="flex flex-col items-center gap-2">
                       <div class="relative">
-                        <img :src="image" width="960" height="540" />
+                        <img :src="image" width="1280" height="720" />
                         <div class="absolute top-1 right-1">
                           <TooltipProvider :delay-duration="0">
                             <Tooltip>
@@ -245,6 +257,16 @@ const removeImage = () => {
                 <FormMessage />
               </FormField>
             </CardContent>
+            <CardFooter>
+              <div class="flex flex-col px-6">
+                <ul class="text-blue-500 text-sm font-semibold list-disc">
+                  <li>ขนาดที่แนะนำ 1280x720 พิกเซล</li>
+                  <li>อัตราส่วน 16:9</li>
+                  <li>ขนาดไฟล์ไม่เกิน 1MB</li>
+                  <li>ไฟล์ที่รองรับ: <span class="font-normal">.jpeg, .png, .webp</span></li>
+                </ul>
+              </div>
+            </CardFooter>
           </Card>
         </div>
         <div class="grid auto-rows-max items-start gap-4 lg:gap-8">
