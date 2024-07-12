@@ -59,6 +59,13 @@ export interface QueryManagerRequest extends Pagination {
   status?: CommonStatus
 }
 
+export interface CreateManagerRequest {
+  username: string
+  password: string
+  role: AdminRoles
+  status: CommonStatus
+}
+
 export interface CustomerResponse {
   id: number
   createdAt: Date

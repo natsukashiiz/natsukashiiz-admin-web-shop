@@ -1,5 +1,11 @@
 import client from './request'
-import type { ApiResponse, PageResponse, ManagerResponse, QueryManagerRequest } from '@/types/api'
+import type {
+  ApiResponse,
+  PageResponse,
+  ManagerResponse,
+  QueryManagerRequest,
+  CreateManagerRequest
+} from '@/types/api'
 
 const queryManagerList = (
   params: QueryManagerRequest
@@ -7,4 +13,8 @@ const queryManagerList = (
   return client.get('/v1/managers', { params })
 }
 
-export { queryManagerList }
+const createManager = (data: CreateManagerRequest): ApiResponse<ManagerResponse> => {
+  return client.post('/v1/managers', data)
+}
+
+export { queryManagerList, createManager }

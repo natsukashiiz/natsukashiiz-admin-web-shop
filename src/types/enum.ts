@@ -18,8 +18,8 @@ export enum SocialProviders {
 }
 
 export enum AdminRoles {
-  admin,
-  super_admin
+  super_admin = 'super_admin',
+  admin = 'admin'
 }
 
 export enum CommonStatus {
