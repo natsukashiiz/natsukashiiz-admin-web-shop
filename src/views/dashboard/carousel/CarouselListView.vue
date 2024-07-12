@@ -15,6 +15,8 @@ import type { CarouselResponse } from '@/types/api'
 import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
+import { CommonStatus } from '@/types/enum'
+import CCommonStatus from '@/components/CCommonStatus.vue'
 
 const columns: TableColumn[] = [
   {
@@ -32,6 +34,11 @@ const columns: TableColumn[] = [
   {
     key: 'sort',
     label: 'ลำดับ',
+    class: 'hidden md:table-cell'
+  },
+  {
+    key: 'status',
+    label: 'สถานะ',
     class: 'hidden md:table-cell'
   },
   {
@@ -55,12 +62,23 @@ const searchBy: TableSearchBy[] = [
     key: 'title',
     label: 'หัวข้อ',
     type: 'text'
+  },
+  {
+    key: 'status',
+    label: 'สถานะ',
+    type: 'select',
+    options: [
+      { label: 'ทั้งหมด', value: 'none' },
+      { label: 'เปิดใช้งาน', value: CommonStatus.active },
+      { label: 'ปิดใช้งาน', value: CommonStatus.inactive },
+      { label: 'ถูกลบ', value: CommonStatus.deleted }
+    ]
   }
 ]
 
 const search = reactive<TableSearch>({
-  query: undefined,
-  by: searchBy[0]
+  query: CommonStatus.active,
+  by: searchBy[2]
 })
 const carousels = ref<CarouselResponse[]>([])
 const pagination = reactive<Pagination>({
@@ -75,7 +93,11 @@ const loadCarouselList = async () => {
       page: pagination.page,
       size: pagination.size,
       id: search.by.key === 'id' && search.query ? Number(search.query) : undefined,
-      title: search.by.key === 'title' && search.query ? String(search.query) : undefined
+      title: search.by.key === 'title' && search.query ? String(search.query) : undefined,
+      status:
+        search.by.key === 'status' && search.query
+          ? CommonStatus[search.query as keyof typeof CommonStatus]
+          : undefined
     })
     if (res.status === 200 && res.data) {
       carousels.value = res.data.list
@@ -121,6 +143,9 @@ onMounted(async () => {
         height="50"
         width="150"
       />
+    </template>
+    <template #status="{ item }">
+      <CCommonStatus :status="item.status" />
     </template>
     <template #actions>
       <DropdownMenu>

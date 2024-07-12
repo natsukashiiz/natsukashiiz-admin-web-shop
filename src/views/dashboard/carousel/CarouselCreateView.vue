@@ -18,7 +18,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import { ref } from 'vue'
-import { PostStatus } from '@/types/enum'
+import { CommonStatus } from '@/types/enum'
 import { createCarousel } from '@/api/carousel'
 import type { CreateCarouselRequest } from '@/types/api'
 import { toast } from '@/components/ui/toast'
@@ -40,7 +40,7 @@ const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors } = useF
   ),
   initialValues: {
     sort: 0,
-    status: PostStatus.draft
+    status: CommonStatus.draft
   }
 })
 const onSubmit = handleSubmit(async (form: CreateCarouselRequest) => {
@@ -271,7 +271,7 @@ const removeImage = () => {
                             <SelectValue placeholder="เลือกสถานะ" />
                           </SelectTrigger>
                           <SelectContent>
-                            <template v-for="item in Object.values(PostStatus)" :key="item">
+                            <template v-for="item in Object.values(CommonStatus)" :key="item">
                               <SelectItem :value="item">
                                 {{ item }}
                               </SelectItem>

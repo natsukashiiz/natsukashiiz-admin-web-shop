@@ -40,7 +40,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
       </Card>
       <Card>
         <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle class="text-sm font-medium"> กำลังใช้งานอยู่ </CardTitle>
+          <CardTitle class="text-sm font-medium"> กำลังเปิดใช้งาน </CardTitle>
           <Activity class="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>

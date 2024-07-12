@@ -15,6 +15,8 @@ import type { ManagerResponse } from '@/types/api'
 import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
+import { CommonStatus } from '@/types/enum'
+import CCommonStatus from '@/components/CCommonStatus.vue'
 
 const columns: TableColumn[] = [
   {
@@ -31,6 +33,11 @@ const columns: TableColumn[] = [
     class: 'hidden md:table-cell'
   },
   {
+    key: 'status',
+    label: 'สถานะ',
+    class: 'hidden md:table-cell'
+  },
+  {
     key: 'createdAt',
     label: 'วันที่ลงทะเบียน',
     class: 'hidden md:table-cell'
@@ -42,13 +49,32 @@ const columns: TableColumn[] = [
   }
 ]
 const searchBy: TableSearchBy[] = [
-  { key: 'id', label: 'ID', type: 'number' },
-  { key: 'username', label: 'ชื่อผู้ใช้', type: 'search' }
+  {
+    key: 'id',
+    label: 'ID',
+    type: 'number'
+  },
+  {
+    key: 'username',
+    label: 'ชื่อผู้ใช้',
+    type: 'search'
+  },
+  {
+    key: 'status',
+    label: 'สถานะ',
+    type: 'select',
+    options: [
+      { label: 'ทั้งหมด', value: 'none' },
+      { label: 'เปิดใช้งาน', value: CommonStatus.active },
+      { label: 'ปิดใช้งาน', value: CommonStatus.inactive },
+      { label: 'ถูกลบ', value: CommonStatus.deleted }
+    ]
+  }
 ]
 
 const search = reactive<TableSearch>({
-  query: undefined,
-  by: searchBy[1]
+  query: CommonStatus.active,
+  by: searchBy[2]
 })
 const managers = ref<ManagerResponse[]>([])
 const pagination = reactive<Pagination>({
@@ -63,7 +89,11 @@ const loadManagerList = async () => {
       page: pagination.page,
       size: pagination.size,
       id: search.by.key === 'id' && search.query ? Number(search.query) : undefined,
-      username: search.by.key === 'username' && search.query ? search.query.trim() : undefined
+      username: search.by.key === 'username' && search.query ? search.query.trim() : undefined,
+      status:
+        search.by.key === 'status' && search.query
+          ? CommonStatus[search.query as keyof typeof CommonStatus]
+          : undefined
     })
     if (res.status === 200 && res.data) {
       managers.value = res.data.list
@@ -101,6 +131,9 @@ onMounted(async () => {
     @update:search-query="($event) => (search.query = $event)"
     @update:search-by="($event) => (search.by = $event)"
   >
+    <template #status="{ item }">
+      <CCommonStatus :status="item.status" />
+    </template>
     <template #actions>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>

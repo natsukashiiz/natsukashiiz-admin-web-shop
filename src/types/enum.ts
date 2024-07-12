@@ -22,13 +22,8 @@ export enum AdminRoles {
   super_admin
 }
 
-export enum VoucherStatus {
+export enum CommonStatus {
   active = 'active',
-  inactive = 'inactive'
-}
-
-export enum PostStatus {
-  draft = 'draft',
-  published = 'published',
-  archived = 'archived'
+  inactive = 'inactive',
+  deleted = 'deleted'
 }

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { MoreHorizontal } from 'lucide-vue-next'
-import { CheckCircledIcon, CrossCircledIcon } from '@radix-icons/vue'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -16,8 +15,9 @@ import type { VoucherResponse } from '@/types/api'
 import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
-import { DiscountType, VoucherStatus } from '@/types/enum'
+import { DiscountType, CommonStatus } from '@/types/enum'
 import Badge from '@/components/ui/badge/Badge.vue'
+import CCommonStatus from '@/components/CCommonStatus.vue'
 
 const columns: TableColumn[] = [
   {
@@ -110,14 +110,15 @@ const searchBy: TableSearchBy[] = [
     type: 'select',
     options: [
       { label: 'ทั้งหมด', value: 'none' },
-      { label: 'ใช้งาน', value: VoucherStatus.active },
-      { label: 'ไม่ใช้งาน', value: VoucherStatus.inactive }
+      { label: 'เปิดใช้งาน', value: CommonStatus.active },
+      { label: 'ปิดใช้งาน', value: CommonStatus.inactive },
+      { label: 'ถูกลบ', value: CommonStatus.deleted }
     ]
   }
 ]
 
 const search = reactive<TableSearch>({
-  query: VoucherStatus.active,
+  query: CommonStatus.active,
   by: searchBy[3]
 })
 const vouchers = ref<VoucherResponse[]>([])
@@ -140,7 +141,7 @@ const loadVoucherList = async () => {
           : undefined,
       status:
         search.by.key === 'status' && search.query
-          ? VoucherStatus[search.query as keyof typeof VoucherStatus]
+          ? CommonStatus[search.query as keyof typeof CommonStatus]
           : undefined
     })
     if (res.status === 200 && res.data) {
@@ -195,14 +196,7 @@ onMounted(async () => {
       <Badge v-else-if="item.discountType === DiscountType.amount" variant="secondary">บาท</Badge>
     </template>
     <template #status="{ item }">
-      <CheckCircledIcon
-        v-if="item.status === VoucherStatus.active"
-        class="h-5 w-5 text-green-500"
-      />
-      <CrossCircledIcon
-        v-else-if="item.status === VoucherStatus.inactive"
-        class="h-5 w-5 text-red-500"
-      />
+      <CCommonStatus :status="item.status" />
     </template>
     <template #actions="{ item }">
       <DropdownMenu>

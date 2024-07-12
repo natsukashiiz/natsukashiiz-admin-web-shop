@@ -15,7 +15,8 @@ import type { CategoryResponse } from '@/types/api'
 import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
-import { PostStatus } from '@/types/enum'
+import { CommonStatus } from '@/types/enum'
+import CCommonStatus from '@/components/CCommonStatus.vue'
 
 const columns: TableColumn[] = [
   {
@@ -68,15 +69,15 @@ const searchBy: TableSearchBy[] = [
     type: 'select',
     options: [
       { label: 'ทั้งหมด', value: 'none' },
-      { label: 'ฉบับร่าง', value: PostStatus.draft },
-      { label: 'เผยแพร่', value: PostStatus.published },
-      { label: 'จัดเก็บ', value: PostStatus.archived }
+      { label: 'เปิดใช้งาน', value: CommonStatus.active },
+      { label: 'ปิดใช้งาน', value: CommonStatus.inactive },
+      { label: 'ถูกลบ', value: CommonStatus.deleted }
     ]
   }
 ]
 
 const search = reactive<TableSearch>({
-  query: PostStatus.published,
+  query: CommonStatus.active,
   by: searchBy[2]
 })
 const categorys = ref<CategoryResponse[]>([])
@@ -95,7 +96,7 @@ const loadCategoryList = async () => {
       name: search.by.key === 'name' && search.query ? search.query.trim() : undefined,
       status:
         search.by.key === 'status' && search.query
-          ? PostStatus[search.query as keyof typeof PostStatus]
+          ? CommonStatus[search.query as keyof typeof CommonStatus]
           : undefined
     })
     if (res.status === 200 && res.data) {
@@ -144,24 +145,7 @@ onMounted(async () => {
       />
     </template>
     <template #status="{ item }">
-      <span
-        v-if="item.status === PostStatus.draft"
-        class="px-1.5 rounded-md bg-gray-500 text-white"
-      >
-        ฉบับร่าง
-      </span>
-      <span
-        v-else-if="item.status === PostStatus.published"
-        class="px-1.5 rounded-md bg-emerald-200 text-black"
-      >
-        เผยแพร่
-      </span>
-      <span
-        v-else-if="item.status === PostStatus.archived"
-        class="px-1.5 rounded-md bg-red-400 text-white"
-      >
-        จัดเก็บ
-      </span>
+      <CCommonStatus :status="item.status" />
     </template>
     <template #actions="{ item }">
       <DropdownMenu>

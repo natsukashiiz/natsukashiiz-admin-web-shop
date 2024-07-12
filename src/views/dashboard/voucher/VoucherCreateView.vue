@@ -31,7 +31,7 @@ import { getLocalTimeZone, today } from '@internationalized/date'
 import { uploadFile } from '@/api/file'
 import { createVoucher } from '@/api/voucher'
 import type { CreateVoucherRequest } from '@/types/api'
-import { DiscountType, VoucherStatus } from '@/types/enum'
+import { DiscountType, CommonStatus } from '@/types/enum'
 import { validateFileType, validateFileSize } from '@/utils/validations'
 import dayjs from 'dayjs'
 import { watch } from 'vue'
@@ -65,7 +65,7 @@ const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors, values 
       }),
       beginAt: z.date({ message: 'กรุณาเลือกวันที่เริ่มต้น' }),
       expiredAt: z.date({ message: 'กรุณาเลือกวันที่สิ้นสุด' }),
-      status: z.nativeEnum(VoucherStatus, { message: 'กรุณาเลือกสถานะ' }),
+      status: z.nativeEnum(CommonStatus, { message: 'กรุณาเลือกสถานะ' }),
       thumbnail: z.string({ message: 'กรุณาอัปโหลดรูปภาพ' })
     })
   ),
@@ -75,7 +75,7 @@ const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors, values 
     maxDiscount: undefined,
     minOrderPrice: 0,
     quantity: 0,
-    status: VoucherStatus.active
+    status: CommonStatus.active
   }
 })
 
@@ -485,9 +485,9 @@ const removeImage = () => {
                           <SelectValue placeholder="เลือกสถานะ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <template v-for="item in Object.values(VoucherStatus)" :key="item">
-                            <SelectItem :value="item">
-                              {{ item }}
+                          <template v-for="status in Object.values(CommonStatus)" :key="status">
+                            <SelectItem :value="status">
+                              {{ status }}
                             </SelectItem>
                           </template>
                         </SelectContent>

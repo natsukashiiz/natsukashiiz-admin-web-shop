@@ -27,7 +27,7 @@ import * as z from 'zod'
 import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import { ref } from 'vue'
 import type { CreateCategoryRequest } from '@/types/api'
-import { PostStatus } from '@/types/enum'
+import { CommonStatus } from '@/types/enum'
 import { updateCategory, queryCategory } from '@/api/category'
 import { uploadFile } from '@/api/file'
 import { validateFileSize, validateFileType } from '@/utils/validations'
@@ -70,13 +70,9 @@ const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors } = useF
       name: z.string({ message: 'กรุณากรอกชื่อหมวดหมู่' }),
       sort: z.number({ message: 'กรุณากรอกลำดับหมวดหมู่' }),
       thumbnail: z.string({ message: 'กรุณาอัปโหลดรูปภาพ' }),
-      status: z.nativeEnum(PostStatus)
+      status: z.nativeEnum(CommonStatus)
     })
-  ),
-  initialValues: {
-    sort: 0,
-    status: PostStatus.draft
-  }
+  )
 })
 const onSubmit = handleSubmit(async (form) => {
   if (file.value) {
@@ -184,7 +180,14 @@ onMounted(async () => {
         <div class="hidden items-center gap-2 md:ml-auto md:flex">
           <Popover>
             <PopoverTrigger>
-              <Button variant="outline" size="sm" type="button"> ยกเลิก </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                @click="$router.push({ name: 'category-list' })"
+              >
+                ยกเลิก
+              </Button>
             </PopoverTrigger>
             <PopoverContent>
               <div class="flex">
@@ -267,7 +270,7 @@ onMounted(async () => {
                             <SelectValue placeholder="เลือกสถานะ" />
                           </SelectTrigger>
                           <SelectContent>
-                            <template v-for="status in Object.values(PostStatus)" :key="status">
+                            <template v-for="status in Object.values(CommonStatus)" :key="status">
                               <SelectItem :value="status">
                                 {{ status }}
                               </SelectItem>
@@ -357,7 +360,9 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex items-center justify-center gap-2 md:hidden">
-        <Button variant="outline" size="sm" @click="handleCancel"> ยกเลิก </Button>
+        <Button variant="outline" size="sm" @click="$router.push({ name: 'category-list' })">
+          ยกเลิก
+        </Button>
         <Button size="sm" type="submit"> บันทึก </Button>
       </div>
     </div>

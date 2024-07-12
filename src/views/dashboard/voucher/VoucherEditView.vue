@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { computed, ref, type Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Calendar } from '@/components/ui/calendar'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -26,12 +26,12 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import { toast } from '@/components/ui/toast'
-import { getLocalTimeZone, today, parseDate, type DateValue } from '@internationalized/date'
+import { getLocalTimeZone, today, parseDate } from '@internationalized/date'
 
 import { uploadFile } from '@/api/file'
 import { queryVoucher, updateVoucher } from '@/api/voucher'
 import type { CreateVoucherRequest } from '@/types/api'
-import { DiscountType, VoucherStatus } from '@/types/enum'
+import { DiscountType, CommonStatus } from '@/types/enum'
 import { validateFileType, validateFileSize } from '@/utils/validations'
 import dayjs from 'dayjs'
 import { watch, onMounted } from 'vue'
@@ -69,7 +69,7 @@ const { isFieldDirty, handleSubmit, setFieldValue, setErrors, values } = useForm
       }),
       beginAt: z.string({ message: 'กรุณาเลือกวันที่เริ่มต้น' }),
       expiredAt: z.string({ message: 'กรุณาเลือกวันที่สิ้นสุด' }),
-      status: z.nativeEnum(VoucherStatus, { message: 'กรุณาเลือกสถานะ' }),
+      status: z.nativeEnum(CommonStatus, { message: 'กรุณาเลือกสถานะ' }),
       thumbnail: z.string({ message: 'กรุณาอัปโหลดรูปภาพ' })
     })
   ),
@@ -79,7 +79,7 @@ const { isFieldDirty, handleSubmit, setFieldValue, setErrors, values } = useForm
     maxDiscount: undefined,
     minOrderPrice: 0,
     quantity: 0,
-    status: VoucherStatus.active
+    status: CommonStatus.active
   }
 })
 
@@ -525,9 +525,9 @@ const expiredAt = computed({
                           <SelectValue placeholder="เลือกสถานะ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <template v-for="item in Object.values(VoucherStatus)" :key="item">
-                            <SelectItem :value="item">
-                              {{ item }}
+                          <template v-for="status in Object.values(CommonStatus)" :key="status">
+                            <SelectItem :value="status">
+                              {{ status }}
                             </SelectItem>
                           </template>
                         </SelectContent>

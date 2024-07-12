@@ -16,6 +16,8 @@ import type { ProductResponse } from '@/types/api'
 import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
+import { CommonStatus } from '@/types/enum'
+import CCommonStatus from '@/components/CCommonStatus.vue'
 
 const columns: TableColumn[] = [
   {
@@ -60,6 +62,11 @@ const columns: TableColumn[] = [
     class: 'hidden md:table-cell'
   },
   {
+    key: 'status',
+    label: 'สถานะ',
+    class: 'hidden md:table-cell'
+  },
+  {
     key: 'createdAt',
     label: 'วันที่ลงทะเบียน',
     class: 'hidden md:table-cell'
@@ -71,14 +78,38 @@ const columns: TableColumn[] = [
   }
 ]
 const searchBy = ref<TableSearchBy[]>([
-  { key: 'id', label: 'ID', type: 'number' },
-  { key: 'name', label: 'ชื่อ', type: 'search' },
-  { key: 'category', label: 'หมวดหมู่', type: 'select', options: [] }
+  {
+    key: 'id',
+    label: 'ID',
+    type: 'number'
+  },
+  {
+    key: 'name',
+    label: 'ชื่อ',
+    type: 'search'
+  },
+  {
+    key: 'category',
+    label: 'หมวดหมู่',
+    type: 'select',
+    options: []
+  },
+  {
+    key: 'status',
+    label: 'สถานะ',
+    type: 'select',
+    options: [
+      { label: 'ทั้งหมด', value: 'none' },
+      { label: 'เปิดใช้งาน', value: CommonStatus.active },
+      { label: 'ปิดใช้งาน', value: CommonStatus.inactive },
+      { label: 'ถูกลบ', value: CommonStatus.deleted }
+    ]
+  }
 ])
 
 const search = reactive<TableSearch>({
-  query: undefined,
-  by: searchBy.value[0]
+  query: CommonStatus.active,
+  by: searchBy.value[3]
 })
 const products = ref<ProductResponse[]>([])
 const pagination = reactive<Pagination>({
@@ -94,7 +125,12 @@ const loadProductList = async () => {
       size: pagination.size,
       id: search.by.key === 'id' && search.query ? Number(search.query) : undefined,
       name: search.by.key === 'name' && search.query ? search.query : undefined,
-      'category.id': search.by.key === 'category' && search.query ? Number(search.query) : undefined
+      'category.id':
+        search.by.key === 'category' && search.query ? Number(search.query) : undefined,
+      status:
+        search.by.key === 'status' && search.query
+          ? CommonStatus[search.query as keyof typeof CommonStatus]
+          : undefined
     })
     if (res.status === 200 && res.data) {
       products.value = res.data.list
@@ -167,6 +203,9 @@ onMounted(() => {
     </template>
     <template #rating="{ item }">
       <span>{{ item.rating.toFixed(2) }}</span>
+    </template>
+    <template #status="{ item }">
+      <CCommonStatus :status="item.status" />
     </template>
     <template #actions="{ item }">
       <DropdownMenu>

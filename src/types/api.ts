@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios'
-import type { AdminRoles, DiscountType, PostStatus, VoucherStatus } from './enum'
+import type { AdminRoles, DiscountType, CommonStatus } from './enum'
 
 export type ApiResponse<T> = Promise<AxiosResponse<T>>
 
@@ -49,12 +49,14 @@ export interface ManagerResponse {
   updatedAt: Date
   username: string
   role: AdminRoles
+  status: CommonStatus
 }
 
 export interface QueryManagerRequest extends Pagination {
   id?: number
   username?: string
   role?: AdminRoles
+  status?: CommonStatus
 }
 
 export interface CustomerResponse {
@@ -89,12 +91,14 @@ export interface ProductResponse {
   orders: number
   rating: number
   reviews: number
+  status: CommonStatus
 }
 
 export interface QueryProductRequest extends Pagination {
   id?: number
   name?: string
   'category.id'?: number
+  status?: CommonStatus
 }
 
 export interface CategoryResponse {
@@ -104,20 +108,20 @@ export interface CategoryResponse {
   name: string
   thumbnail: string
   sort: number
-  status: PostStatus
+  status: CommonStatus
 }
 
 export interface QueryCategoryRequest extends Pagination {
   id?: number
   name?: string
-  status?: PostStatus
+  status?: CommonStatus
 }
 
 export interface CreateCategoryRequest {
   name: string
   thumbnail: string
   sort: number
-  status: PostStatus
+  status: CommonStatus
 }
 
 export interface ImageResponse {
@@ -148,17 +152,20 @@ export interface CarouselResponse {
   title: string
   imageUrl: string
   sort: number
+  status: CommonStatus
 }
 
 export interface QueryCarouselRequest extends Pagination {
   id?: number
   title?: string
+  status?: CommonStatus
 }
 
 export interface CreateCarouselRequest {
   title: string
   imageUrl: string
   sort: number
+  status: CommonStatus
 }
 
 export interface VoucherResponse {
@@ -175,7 +182,7 @@ export interface VoucherResponse {
   category: CategoryResponse | null
   beginAt: string
   expiredAt: string
-  status: VoucherStatus
+  status: CommonStatus
   thumbnail: string
 }
 
@@ -183,7 +190,7 @@ export interface QueryVoucherRequest extends Pagination {
   id?: number
   code?: string
   discountType?: DiscountType
-  status?: VoucherStatus
+  status?: CommonStatus
 }
 
 export interface CreateVoucherRequest {
@@ -197,7 +204,7 @@ export interface CreateVoucherRequest {
   category?: number
   beginAt: string | Date
   expiredAt: string | Date
-  status: VoucherStatus
+  status: CommonStatus
   thumbnail: string
 }
 
@@ -211,6 +218,6 @@ export interface UpdateVoucherRequest {
   category?: number
   beginAt: string | Date
   expiredAt: string | Date
-  status: VoucherStatus
+  status: CommonStatus
   thumbnail: string
 }

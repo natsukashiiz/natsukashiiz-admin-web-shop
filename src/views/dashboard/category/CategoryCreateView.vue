@@ -27,7 +27,7 @@ import * as z from 'zod'
 import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import { ref } from 'vue'
 import type { CreateCategoryRequest } from '@/types/api'
-import { PostStatus } from '@/types/enum'
+import { CommonStatus } from '@/types/enum'
 import { createCategory } from '@/api/category'
 import { uploadFile } from '@/api/file'
 import { validateFileSize, validateFileType } from '@/utils/validations'
@@ -45,12 +45,12 @@ const { isFieldDirty, handleSubmit, resetForm, setFieldValue, setErrors } = useF
       name: z.string({ message: 'กรุณากรอกชื่อหมวดหมู่' }),
       sort: z.number({ message: 'กรุณากรอกลำดับหมวดหมู่' }),
       thumbnail: z.string({ message: 'กรุณาอัปโหลดรูปภาพ' }),
-      status: z.nativeEnum(PostStatus)
+      status: z.nativeEnum(CommonStatus)
     })
   ),
   initialValues: {
     sort: 0,
-    status: PostStatus.draft
+    status: CommonStatus.active
   }
 })
 const onSubmit = handleSubmit(async (form) => {
@@ -249,7 +249,7 @@ const removeImage = () => {
                             <SelectValue placeholder="เลือกสถานะ" />
                           </SelectTrigger>
                           <SelectContent>
-                            <template v-for="status in Object.values(PostStatus)" :key="status">
+                            <template v-for="status in Object.values(CommonStatus)" :key="status">
                               <SelectItem :value="status">
                                 {{ status }}
                               </SelectItem>
