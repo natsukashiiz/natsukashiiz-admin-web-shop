@@ -66,6 +66,13 @@ export interface CreateManagerRequest {
   status: CommonStatus
 }
 
+export interface UpdateManagerRequest {
+  username: string
+  password: string
+  role: AdminRoles
+  status: CommonStatus
+}
+
 export interface CustomerResponse {
   id: number
   createdAt: Date
