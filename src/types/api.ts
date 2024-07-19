@@ -115,6 +115,15 @@ export interface QueryProductRequest extends Pagination {
   status?: CommonStatus
 }
 
+export interface CreateProductRequest {
+  name: string
+  category: CategoryResponse
+  options: CreateProductOptionRequest[]
+  images: CreateProductImageRequest[]
+  description: string
+  status: CommonStatus
+}
+
 export interface CategoryResponse {
   id: number
   createdAt: Date
@@ -146,6 +155,11 @@ export interface ImageResponse {
   sort: number
 }
 
+export interface CreateProductImageRequest {
+  url: string
+  sort: number
+}
+
 export interface ProductOptionResponse {
   id: number
   createdAt: Date
@@ -155,6 +169,16 @@ export interface ProductOptionResponse {
   quantity: number
   sort: number
   image: ImageResponse
+}
+
+export interface CreateProductOptionRequest {
+  name: string
+  price: number
+  quantity: number
+  sort: number
+  image?: {
+    url: string
+  }
 }
 
 export interface QueryProductOptionRequest extends Pagination {}
