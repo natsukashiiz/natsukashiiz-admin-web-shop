@@ -36,7 +36,7 @@ import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import { useToast } from '@/components/ui/toast'
 
 import type {
-  CategoryResponse,
+  CategoryNameResponse,
   CreateProductRequest,
   CreateProductOptionRequest,
   CreateProductImageRequest
@@ -60,7 +60,7 @@ interface Option extends CreateProductOptionRequest {
 
 const { toast } = useToast()
 
-const categories = ref<CategoryResponse[]>([])
+const categories = ref<CategoryNameResponse[]>([])
 const options = ref<Option[]>([{ key: 1, name: '', quantity: 0, price: 0, sort: 0 }])
 const images = ref<Image[]>([])
 const fileInputRef = ref<HTMLInputElement | null>(null)
@@ -276,6 +276,12 @@ const optionIsEmpty = computed(() =>
   options.value.every((option) => option.name === '' && option.quantity === 0 && option.price === 0)
 )
 
+const optionHasImage = (url: string) => {
+  if (!url) return false
+
+  return options.value.some((option) => option.image?.url === url)
+}
+
 watch(
   options,
   (newValue) => {
@@ -394,7 +400,7 @@ useEventListener(window, 'beforeunload', (event) => {
                           <Input type="number" v-model="option.quantity" :min="0" />
                         </TableCell>
                         <TableCell>
-                          <Input type="number" v-model="option.price" :min="0" />
+                          <Input type="number" v-model="option.price" :min="0" step="any" />
                         </TableCell>
                         <TableCell>
                           <Input type="number" v-model="option.sort" />
@@ -405,7 +411,7 @@ useEventListener(window, 'beforeunload', (event) => {
                             size="icon"
                             variant="outline"
                             @click="handleRemoveOptionInput(option.key)"
-                            :disabled="option.key === 1"
+                            :disabled="options.length === 1"
                           >
                             <Trash class="h-3.5 w-3.5" />
                           </Button>
@@ -486,7 +492,10 @@ useEventListener(window, 'beforeunload', (event) => {
                             </SelectTrigger>
                             <SelectContent>
                               <template v-for="option in options" :key="option.name">
-                                <SelectItem :value="String(option.key)">
+                                <SelectItem
+                                  :value="String(option.key)"
+                                  :disabled="optionHasImage(option.image?.url!)"
+                                >
                                   {{ option.name }}
                                 </SelectItem>
                               </template>

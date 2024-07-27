@@ -22,14 +22,15 @@ export interface Pagination {
   total: number
 }
 
-export interface TableSearchBy {
+export interface TableSearchOption {
   key: string
   label: string
   type: InputTypeHTMLAttribute | 'select'
-  options?: { label: string; value: string }[]
+  showCount?: boolean
+  options?: { label: string; value: string; count?: number }[]
 }
 
 export interface TableSearch {
   query?: string
-  by: TableSearchBy
+  by: TableSearchOption
 }

@@ -12,7 +12,7 @@ import { reactive, ref } from 'vue'
 import CTable from '@/components/CTable.vue'
 import { queryCustomerList } from '@/api/customer'
 import type { CustomerResponse } from '@/types/api'
-import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
+import type { TableColumn, Pagination, TableSearch, TableSearchOption } from '@/types'
 import { onMounted } from 'vue'
 import { CheckCircledIcon, CrossCircledIcon } from '@radix-icons/vue'
 import { watch } from 'vue'
@@ -46,7 +46,7 @@ const columns: TableColumn[] = [
     hidden: true
   }
 ]
-const searchBy: TableSearchBy[] = [
+const searchBy: TableSearchOption[] = [
   { key: 'id', label: 'ID', type: 'number' },
   { key: 'email', label: 'อีเมล', type: 'email' },
   { key: 'username', label: 'ชื่อผู้ใช้', type: 'search' }

@@ -20,9 +20,16 @@ const router = createRouter({
           component: () => import('@/views/dashboard/HomeView.vue')
         },
         {
-          path: '/orders',
-          name: 'orders',
-          component: () => import('@/views/dashboard/OrdersView.vue')
+          path: '/order',
+          name: 'order',
+          redirect: '/order/list',
+          children: [
+            {
+              path: 'list',
+              name: 'order-list',
+              component: () => import('@/views/dashboard/orders/OrderListView.vue')
+            }
+          ]
         },
         {
           path: '/product',

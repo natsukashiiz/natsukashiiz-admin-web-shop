@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios'
-import type { AdminRoles, DiscountType, CommonStatus } from './enum'
+import type { AdminRoles, DiscountType, CommonStatus, OrderStatus } from './enum'
 
 export type ApiResponse<T> = Promise<AxiosResponse<T>>
 
@@ -117,9 +117,18 @@ export interface QueryProductRequest extends Pagination {
 
 export interface CreateProductRequest {
   name: string
-  category: CategoryResponse
+  category: UpdateCategoryRequest
   options: CreateProductOptionRequest[]
   images: CreateProductImageRequest[]
+  description: string
+  status: CommonStatus
+}
+
+export interface UpdateProductRequest {
+  name: string
+  category: UpdateCategoryRequest
+  options: UpdateProductOptionRequest[]
+  images: UpdateProductImageRequest[]
   description: string
   status: CommonStatus
 }
@@ -132,6 +141,12 @@ export interface CategoryResponse {
   thumbnail: string
   sort: number
   status: CommonStatus
+}
+
+export interface CategoryNameResponse {
+  id: number
+  name: string
+  productCount: number
 }
 
 export interface QueryCategoryRequest extends Pagination {
@@ -147,6 +162,14 @@ export interface CreateCategoryRequest {
   status: CommonStatus
 }
 
+export interface UpdateCategoryRequest {
+  id?: number
+  name?: string
+  thumbnail?: string
+  sort?: number
+  status?: CommonStatus
+}
+
 export interface ImageResponse {
   id: number
   createdAt: Date
@@ -160,6 +183,12 @@ export interface CreateProductImageRequest {
   sort: number
 }
 
+export interface UpdateProductImageRequest {
+  id?: number
+  url?: string
+  sort?: number
+}
+
 export interface ProductOptionResponse {
   id: number
   createdAt: Date
@@ -171,6 +200,8 @@ export interface ProductOptionResponse {
   image: ImageResponse
 }
 
+export interface QueryProductOptionRequest extends Pagination {}
+
 export interface CreateProductOptionRequest {
   name: string
   price: number
@@ -181,7 +212,18 @@ export interface CreateProductOptionRequest {
   }
 }
 
-export interface QueryProductOptionRequest extends Pagination {}
+export interface UpdateProductOptionRequest {
+  id?: number
+  name?: string
+  price?: number
+  quantity?: number
+  sort?: number
+  image?: {
+    id?: number
+    url?: string
+    sort?: number
+  }
+}
 
 export interface CarouselResponse {
   id: number
@@ -265,4 +307,71 @@ export interface UpdateVoucherRequest {
   expiredAt: string | Date
   status: CommonStatus
   thumbnail: string
+}
+
+export interface QueryOrderRequest extends Pagination {
+  id?: string
+  'user.id'?: number
+  firstName?: string
+  lastName?: string
+  mobile?: string
+  address?: string
+  status?: OrderStatus
+  chargeId?: string
+  payMethod?: string
+  paidAt?: string
+  cancelAt?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface OrderResponse {
+  id: string
+  user: CustomerResponse
+  firstName: string
+  lastName: string
+  mobile: string
+  address: string
+  items: OrderItem[]
+  totalPay: number
+  totalDiscount: number | null
+  actualPay: number
+  status: OrderStatus
+  chargeId: null | string
+  payUrl: null | string
+  payExpire: number
+  payMethod: null | string
+  trackingNumber: null | string
+  paidAt: Date | null
+  cancelAt: Date | null
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface OrderItem {
+  id: number
+  createdAt: Date
+  updatedAt: Date
+  productId: number
+  productName: string
+  productThumbnail: string
+  optionId: number
+  optionName: string
+  categoryId: number
+  categoryName: string
+  price: number
+  quantity: number
+  totalPrice: number
+}
+
+export interface UpdateOrderShippingRequest {
+  trackingNumber: string
+}
+
+export interface QueryOrdersResponse {
+  orders: OrderResponse[]
+  statusCount: {
+    [key in OrderStatus]: number
+  }
+  total: number
 }

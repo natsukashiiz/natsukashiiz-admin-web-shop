@@ -1,10 +1,12 @@
 export enum OrderStatus {
-  pending,
-  paid,
-  successful,
-  failed,
-  self_canceled,
-  system_canceled
+  pending = 'pending',
+  paid = 'paid',
+  shipping = 'shipping',
+  successful = 'successful',
+  failed = 'failed',
+  self_canceled = 'self_canceled',
+  seller_canceled = 'seller_canceled',
+  system_canceled = 'system_canceled'
 }
 
 export enum DiscountType {

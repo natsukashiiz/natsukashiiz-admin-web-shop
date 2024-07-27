@@ -4,14 +4,16 @@ import type {
   PageResponse,
   CategoryResponse,
   QueryCategoryRequest,
-  CreateCategoryRequest
+  CreateCategoryRequest,
+  CategoryNameResponse
 } from '@/types/api'
 
 const queryCategoryList = (
   params: QueryCategoryRequest
 ): ApiResponse<PageResponse<CategoryResponse>> => client.get('/v1/categories', { params })
 
-const queryCategoryNames = (): ApiResponse<CategoryResponse[]> => client.get('/v1/categories/names')
+const queryCategoryNames = (): ApiResponse<CategoryNameResponse[]> =>
+  client.get('/v1/categories/names')
 
 const queryCategory = (id: number): ApiResponse<CategoryResponse> =>
   client.get(`/v1/categories/${id}`)

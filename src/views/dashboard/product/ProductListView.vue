@@ -13,7 +13,7 @@ import CTable from '@/components/CTable.vue'
 import { queryProductList } from '@/api/product'
 import { queryCategoryNames } from '@/api/category'
 import type { ProductResponse } from '@/types/api'
-import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
+import type { TableColumn, Pagination, TableSearch, TableSearchOption } from '@/types'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
 import { CommonStatus } from '@/types/enum'
@@ -77,7 +77,7 @@ const columns: TableColumn[] = [
     hidden: true
   }
 ]
-const searchBy = ref<TableSearchBy[]>([
+const searchBy = ref<TableSearchOption[]>([
   {
     key: 'id',
     label: 'ID',
@@ -145,7 +145,7 @@ const loadCategoryNames = async () => {
     const res = await queryCategoryNames()
     if (res.status === 200 && res.data) {
       searchBy.value[2].options = res.data.map((category) => ({
-        label: category.name,
+        label: `${category.name} (${category.productCount})`,
         value: String(category.id)
       }))
     }

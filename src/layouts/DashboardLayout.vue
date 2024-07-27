@@ -29,9 +29,16 @@ const menus: MenuItem[] = [
   },
   {
     title: 'คำสั่งซื้อ',
-    name: 'orders',
-    href: '/orders',
-    icon: ShoppingCart
+    name: 'order',
+    icon: ShoppingCart,
+    children: [
+      {
+        title: 'รายการคำสั่งซื้อ',
+        name: 'order-list',
+        href: '/order/list',
+        icon: List
+      }
+    ]
   },
   {
     title: 'สินค้า',

@@ -12,7 +12,7 @@ import { reactive, ref } from 'vue'
 import CTable from '@/components/CTable.vue'
 import { queryCarouselList } from '@/api/carousel'
 import type { CarouselResponse } from '@/types/api'
-import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
+import type { TableColumn, Pagination, TableSearch, TableSearchOption } from '@/types'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
 import { CommonStatus } from '@/types/enum'
@@ -52,7 +52,7 @@ const columns: TableColumn[] = [
     hidden: true
   }
 ]
-const searchBy: TableSearchBy[] = [
+const searchBy: TableSearchOption[] = [
   {
     key: 'id',
     label: 'ID',

@@ -12,7 +12,7 @@ import { reactive, ref } from 'vue'
 import CTable from '@/components/CTable.vue'
 import { queryVoucherList } from '@/api/voucher'
 import type { VoucherResponse } from '@/types/api'
-import type { TableColumn, Pagination, TableSearch, TableSearchBy } from '@/types'
+import type { TableColumn, Pagination, TableSearch, TableSearchOption } from '@/types'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
 import { DiscountType, CommonStatus } from '@/types/enum'
@@ -83,7 +83,7 @@ const columns: TableColumn[] = [
     class: 'hidden md:table-cell'
   }
 ]
-const searchBy: TableSearchBy[] = [
+const searchBy: TableSearchOption[] = [
   {
     key: 'id',
     label: 'ID',
